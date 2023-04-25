@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
 import { GET_STORES_RESET } from "../../constants/storeConstants";
-import { listStoreItems } from "../../actions/storeActions";
+import { deleteStoreItem, listStoreItems } from "../../actions/storeActions";
+import { confirmAlert } from "react-confirm-alert";
 
 const StoreItems = () => {
   const navigate = useNavigate();
@@ -38,8 +39,25 @@ const StoreItems = () => {
 
   const onClickFn = () => {
     navigate("/add-store-item");
-  };
+  }; 
   const { currentColor } = useStateContext();
+
+
+  const deleteStoreItems = (id) => {
+    confirmAlert({
+      title: "Permanent Delete",
+      message: "Are You Sure?",
+      buttons: [
+        {
+          label: "No",
+        },
+        {
+          label: "Yes",
+          onClick: () => dispatch(deleteStoreItem(id)),
+        },
+      ],
+    });
+  };
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header
@@ -92,7 +110,7 @@ const StoreItems = () => {
                      <Link to={`/update-store-item/${item._id}`}><Button label="" icon="pi pi-file-edit" /></Link>
                     </td>
                     <td>
-                      <Button label="" icon="pi pi-delete-left" />
+                      <Button className="text-red-700" label="" icon="pi pi-delete-left" onClick={()=> deleteStoreItems(item._id)}/>
                     </td>
                   </tr>
                 ))}

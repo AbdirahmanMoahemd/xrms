@@ -41,7 +41,7 @@ const Sidebar = () => {
               </button>
           </div>
           <div className="mt-10 ">
-              {userInfo.role == 1 ? 
+              {userInfo.role === 1 ? 
               <>
                 {links.map((link) => (
                   <NavLink

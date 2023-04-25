@@ -56,7 +56,7 @@ const UserProfile = () => {
         />
         <div>
           <p className="font-semibold text-xl dark:text-gray-200"> {userInfo.name} </p>
-          <p className="text-gray-500 text-sm dark:text-gray-400">{userInfo.role == 1 ? 'User' : userInfo.role == 2 ? 'Admin': 'Super Admin'}</p>
+          <p className="text-gray-500 text-sm dark:text-gray-400">{userInfo.role === 1 ? 'User' : userInfo.role === 2 ? 'Admin': 'Super Admin'}</p>
           <p className="text-gray-500 text-sm font-semibold dark:text-gray-400"> {userInfo.email} </p>
         </div>
       </div>

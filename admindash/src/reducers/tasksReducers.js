@@ -28,6 +28,10 @@ import {
   GET_BIN_TASKS_SUCCESS,
   GET_BIN_TASKS_FAIL,
   GET_BIN_TASKS_RESET,
+  UNBIN_TASKS_REQUEST,
+  UNBIN_TASKS_SUCCESS,
+  UNBIN_TASKS_RESET,
+  UNBIN_TASKS_FAIL,
 } from "../constants/tasksConstants";
 
 export const createTaskReducer = (state = {}, action) => {
@@ -113,6 +117,21 @@ export const tasksBinReducer = (state = { }, action) => {
   }
 };
 
+
+export const tasksUnBinReducer = (state = { }, action) => {
+  switch (action.type) {
+    case UNBIN_TASKS_REQUEST:
+      return { loading: true };
+    case UNBIN_TASKS_SUCCESS:
+      return { loading: false, success: true, task: action.payload };
+    case UNBIN_TASKS_RESET:
+      return { task: {} };
+    case UNBIN_TASKS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
 
 export const tasksUpdateReducer = (state = { task: {} }, action) => {
   switch (action.type) {

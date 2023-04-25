@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { Header } from "../../components";
 import { useStateContext } from "../../contexts/ContextProvider";
-import { listUsers } from "../../actions/userActions";
+import { deleteUser, listUsers } from "../../actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
 import { MdChangeCircle } from "react-icons/md";
 import { Button } from "primereact/button";
+import { confirmAlert } from "react-confirm-alert";
 
 const Users = () => {
 
@@ -33,9 +34,20 @@ const Users = () => {
   }, [dispatch, navigate, userInfo, successDelete]);
 
   const deleteHandler = (id) => {
-    // if (window.confirm("Are you sure to delete this user")) {
-    //   dispatch(deleteUser(id));
-    // }
+    confirmAlert({
+      title: "Permanent Delete",
+      message: "Are You Sure?",
+      buttons: [
+        {
+          label: "No",
+        },
+        {
+          label: "Yes",
+          onClick: () => dispatch(deleteUser(id)),
+        },
+      ],
+    });
+   
   };
 
   const onClickFn = () => {
@@ -95,7 +107,7 @@ const Users = () => {
               <td><MdChangeCircle className="text-2xl" /></td>
               <td>
               <td>
-                <Button label="" icon="pi pi-delete-left" />
+                <Button label="" icon="pi pi-delete-left" onClick={()=> deleteHandler(user._id)} />
               </td>
               </td>
             </tr>

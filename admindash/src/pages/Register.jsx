@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Header from "../components/Header";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { register } from "../actions/userActions";
 import { Message } from "primereact/message";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");

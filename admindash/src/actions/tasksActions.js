@@ -16,6 +16,9 @@ import {
   TASK_DETAILS_FAIL,
   TASK_DETAILS_REQUEST,
   TASK_DETAILS_SUCCESS,
+  UNBIN_TASKS_FAIL,
+  UNBIN_TASKS_REQUEST,
+  UNBIN_TASKS_SUCCESS,
   UPDATE_TASKS_FAIL,
   UPDATE_TASKS_REQUEST,
   UPDATE_TASKS_STAGE_FAIL,
@@ -279,6 +282,45 @@ export const updateTasksToBin = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+
+export const updateTasksToUnBin = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: UNBIN_TASKS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/tasks/restore/${id}`,{},
+      config
+    );
+
+    dispatch({
+      type: UNBIN_TASKS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: UNBIN_TASKS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
 
 export const deleteTasks = (id) => async (dispatch, getState) => {
   try {

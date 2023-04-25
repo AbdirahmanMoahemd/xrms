@@ -5,18 +5,18 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
 import { useNavigate } from "react-router-dom";
 import { createNewTask } from "../../actions/tasksActions";
-import DatePicker from 'react-date-picker';
-import 'react-date-picker/dist/DatePicker.css';
-import 'react-calendar/dist/Calendar.css';
+import DatePicker from "react-date-picker";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
 
 const AddTasks = () => {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState(0);
+  const [phone, setPhone] = useState();
   const [item, setItem] = useState("");
   const [problem, setProblem] = useState("");
-  const [comment, setComment] = useState("No Comment.");
+  const [comment, setComment] = useState("");
   const [date, setDate] = useState(new Date());
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
 
   const navigate = useNavigate();
 
@@ -43,22 +43,11 @@ const AddTasks = () => {
 
   let userid = userInfo._id;
 
-
   const submitHandler = (e) => {
     e.preventDefault();
     // DISPACTH REGISTER
     dispatch(
-      createNewTask(
-        
-        name,
-        phone,
-        item,
-        problem,
-        date,
-        amount,
-        userid
-        
-      )
+      createNewTask(name, phone, item, problem, date, amount, userid, comment)
     );
   };
 
@@ -153,25 +142,22 @@ const AddTasks = () => {
               />
             </div>
 
-
             <div>
-              <label className="text-gray-600 mb-2 block">
-                Comment. 
-              </label>
-              <textarea 
+              <label className="text-gray-600 mb-2 block">Comment.</label>
+              <textarea
                 type="text"
                 className="input-box w-full"
                 placeholder="comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                cols="40" rows="5"
+                cols="40"
+                rows="5"
               />
             </div>
 
             <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-              
                 className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
               >
                 Save

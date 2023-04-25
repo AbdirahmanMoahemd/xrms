@@ -45,7 +45,7 @@ const tasksSchema = mongoose.Schema(
     comment: {
       type: String,
       require: true,
-      default: 'No Comment.'
+      default: 'No Comment yet.'
     },
   },
   {

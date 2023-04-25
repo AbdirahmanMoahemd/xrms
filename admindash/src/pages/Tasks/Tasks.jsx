@@ -3,7 +3,6 @@ import { Header } from "../../components";
 import {
   listTasks,
   updateTasksStage,
-  deleteTasks,
   updateTasksToBin,
   listTasksInBin,
 } from "../../actions/tasksActions";
@@ -23,6 +22,7 @@ import { RadioButton } from "primereact/radiobutton";
 import { FaRecycle } from "react-icons/fa";
 
 const Tasks = () => {
+  const [id, setId] = useState(0);
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(false);
@@ -34,7 +34,7 @@ const Tasks = () => {
   const {
     loading: loadingBin,
     error: errorBin,
-    tasks: tasksBin,
+    tasks: tasksBinlist,
   } = tasksListInBin;
 
   const [stage, setStage] = useState("");
@@ -56,6 +56,13 @@ const Tasks = () => {
     success: successDelete,
   } = taskDelete;
 
+  const tasksBin = useSelector((state) => state.tasksBin);
+  const {
+    loading: loadingBinUpdate,
+    error: errorBinUpdate,
+    success: successBinUpdate,
+  } = tasksBin;
+
   useEffect(() => {
     dispatch({ type: GET_TASKS_RESET });
 
@@ -69,16 +76,15 @@ const Tasks = () => {
       dispatch(listTasks());
       dispatch(listTasksInBin());
     }
-  }, [dispatch, navigate, successUpdate, userInfo, successDelete]);
+  }, [dispatch, navigate, successUpdate, userInfo, successDelete, successBinUpdate]);
 
   const { currentColor } = useStateContext();
 
   const onClickFn = () => {
     navigate("/add-tasks");
   };
-  let userID = "";
   const editconfirm = (id) => {
-    userID = id;
+    setId(id)
     confirmAlert({
       title: "Quick Edit or Full Edit",
       message: "",
@@ -96,27 +102,11 @@ const Tasks = () => {
   };
 
   const updateTaskStage = (stage) => {
-    const id = userID;
-    console.log("id", id);
+    
     if (stage !== "") {
       dispatch(updateTasksStage(id, stage));
+      setVisible(false)
     }
-  };
-
-  const deleteTask = (id) => {
-    confirmAlert({
-      title: "Permanent Delete",
-      message: "Are You Sure?",
-      buttons: [
-        {
-          label: "No",
-        },
-        {
-          label: "Yes",
-          onClick: () => dispatch(deleteTasks(id)),
-        },
-      ],
-    });
   };
 
   const binTask = (id) => {
@@ -135,7 +125,7 @@ const Tasks = () => {
     });
   };
 
-  console.log(tasksBin);
+ 
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
@@ -147,55 +137,62 @@ const Tasks = () => {
         onClick={onClickFn}
       />
       <div className="table-responsive" style={{ overflowX: "auto" }}>
-        {userInfo.role == 2 ? <div className="lg:flex justify-between w-full pb-5">
-          {loadingBin ? (
-            <Link>
-              <p className="flex items-center">
-                Recycle Bin <span className="px-1"></span>
-                <FaRecycle />
-                (0)
-              </p>
-            </Link>
-          ) : (
-            <Link to={'/recycle-bin'}>
-              <p className="flex items-center">
-                Recycle Bin <span className="px-1"></span>
-                <FaRecycle />({tasksBin.length})
-              </p>
-            </Link>
-          )}
-          <span className="px-1"></span>
-          <form className="w-full xl:max-w-xl max-w-lg flex relative">
-            <input
-              type="text"
-              className="input-box w-full"
-              placeholder="search"
-              style={{ borderColor: currentColor }}
-            />
-            <button
-              type="submit"
-              style={{ backgroundColor: currentColor }}
-              className="border text-white px-8 font-medium rounded-r-md hover:bg-transparent  transition"
-            >
-              Search
-            </button>
-          </form>
-        </div> : <center> <form className="w-full xl:max-w-xl max-w-lg flex relative">
-            <input
-              type="text"
-              className="input-box w-full"
-              placeholder="search"
-              style={{ borderColor: currentColor }}
-            />
-            <button
-              type="submit"
-              style={{ backgroundColor: currentColor }}
-              className="border text-white px-8 font-medium rounded-r-md hover:bg-transparent  transition"
-            >
-              Search
-            </button>
-          </form></center>}
-          <br/>
+        {userInfo.role === 2 ? (
+          <div className="lg:flex justify-between w-full pb-5">
+            {loadingBin ? (
+              <Link>
+                <p className="flex items-center">
+                  Recycle Bin <span className="px-1"></span>
+                  <FaRecycle />
+                  (0)
+                </p>
+              </Link>
+            ) : (
+              <Link to={"/recycle-bin"}>
+                <p className="flex items-center">
+                  Recycle Bin <span className="px-1"></span>
+                  <FaRecycle />({tasksBinlist.length})
+                </p>
+              </Link>
+            )}
+            <span className="px-1"></span>
+            <form className="w-full xl:max-w-xl max-w-lg flex relative">
+              <input
+                type="text"
+                className="input-box w-full"
+                placeholder="search"
+                style={{ borderColor: currentColor }}
+              />
+              <button
+                type="submit"
+                style={{ backgroundColor: currentColor }}
+                className="border text-white px-8 font-medium rounded-r-md hover:bg-transparent  transition"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+        ) : (
+          <center>
+            {" "}
+            <form className="w-full xl:max-w-xl max-w-lg flex relative">
+              <input
+                type="text"
+                className="input-box w-full"
+                placeholder="search"
+                style={{ borderColor: currentColor }}
+              />
+              <button
+                type="submit"
+                style={{ backgroundColor: currentColor }}
+                className="border text-white px-8 font-medium rounded-r-md hover:bg-transparent  transition"
+              >
+                Search
+              </button>
+            </form>
+          </center>
+        )}
+        <br />
         {loadingDelete && (
           <ProgressSpinner
             style={{ width: "20px", height: "20px" }}
@@ -205,6 +202,16 @@ const Tasks = () => {
           />
         )}
         {errorDelete && <Message severity="error" text={errorDelete} />}
+        {loadingBinUpdate && (
+          <ProgressSpinner
+            style={{ width: "20px", height: "20px" }}
+            strokeWidth="6"
+            fill="var(--surface-ground)"
+            animationDuration=".5s"
+          />
+        )}
+        {errorBinUpdate && <Message severity="error" text={errorBinUpdate} />}
+        {errorBin && <Message severity="error" text={errorBin} />}
         <table className="table">
           <thead>
             <tr>
@@ -220,6 +227,7 @@ const Tasks = () => {
               <td></td>
             </tr>
           </thead>
+          
           {loading ? (
             <ProgressSpinner
               style={{ width: "20px", height: "20px" }}
@@ -366,19 +374,11 @@ const Tasks = () => {
                       </Dialog>
                     </td>
                     <td>
-                      {userInfo.role == 1 ? (
-                        <Button
-                          label=""
-                          icon="pi pi-delete-left"
-                          onClick={() => binTask(tasks._id)}
-                        />
-                      ) : (
-                        <Button
-                          label=""
-                          icon="pi pi-delete-left"
-                          onClick={() => deleteTask(tasks._id)}
-                        />
-                      )}
+                      <Button
+                        label=""
+                        icon="pi pi-delete-left"
+                        onClick={() => binTask(tasks._id)}
+                      />
                     </td>
                   </tr>
                 ))}

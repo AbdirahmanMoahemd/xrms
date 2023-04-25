@@ -16,7 +16,7 @@ import {
   userUpdatePasswordReducer,
 } from "./reducers/userReducers";
 
-import {createTaskReducer, taskDeleteReducer, tasksBinReducer, tasksDetailsReducer, tasksListInBinReducer, tasksListReducer, tasksUpdateReducer, tasksUpdateStageReducer} from './reducers/tasksReducers'
+import {createTaskReducer, taskDeleteReducer, tasksBinReducer, tasksDetailsReducer, tasksListInBinReducer, tasksListReducer, tasksUnBinReducer, tasksUpdateReducer, tasksUpdateStageReducer} from './reducers/tasksReducers'
 import { createStoreItemReducer, storeItemDeleteReducer, storeItemDetailsReducer, storeItemListReducer, storeItemUpdateReducer } from "./reducers/storeReducers";
 
 
@@ -41,6 +41,7 @@ const reducer = combineReducers({
   tasksUpdateStage:tasksUpdateStageReducer,
   tasksBin:tasksBinReducer,
   tasksListInBin:tasksListInBinReducer,
+  tasksUnBin:tasksUnBinReducer,
 
 
   createStoreItem:createStoreItemReducer,

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { FiSettings } from "react-icons/fi";
 import { Navbar, Footer, Sidebar, ThemeSettings } from "./components";
-import { Customers, Ecommerce, Tasks } from "./pages";
 import "./App.css";
 import { useStateContext } from "./contexts/ContextProvider";
 import Users from "./pages/Users/Users";
@@ -17,6 +16,8 @@ import BinTasks from "./pages/Tasks/bin_tasks";
 import StoreItems from "./pages/store/store_items";
 import AddStoreItem from "./pages/store/add_store_item";
 import UpdateStoreItem from "./pages/store/update_store_item";
+import Tasks from "./pages/Tasks/Tasks";
+import Ecommerce from "./pages/Ecommerce";
 
 const App = () => {
   const {
@@ -99,7 +100,6 @@ const App = () => {
                   <Route path="/store" element={<StoreItems />} />
 
                   {/* apps  */}
-                  <Route path="/Slider" element={<Customers />} />
 
                   <Route path="/tasks" element={<Tasks />} />
                   <Route path="/add-tasks" element={<AddTasks />} />
