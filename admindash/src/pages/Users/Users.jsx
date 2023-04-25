@@ -73,7 +73,6 @@ const Users = () => {
               <td>Phone</td>
               <td>ROLE</td>
               <td></td>
-              <td></td>
             </tr>
           </thead>
           {loading ? (
@@ -104,7 +103,6 @@ const Users = () => {
                         <p className="text-white bg-green-500 text-center px-1">Super Admin</p>
                   }
               </td>
-              <td><MdChangeCircle className="text-2xl" /></td>
               <td>
               <td>
                 <Button label="" icon="pi pi-delete-left" onClick={()=> deleteHandler(user._id)} />
