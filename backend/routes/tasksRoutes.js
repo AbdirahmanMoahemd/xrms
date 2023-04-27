@@ -5,7 +5,7 @@ import { admin, protect } from '../middlewares/authMiddleware.js'
 const router = express.Router()
 
 
-router.route('/').get(protect, getTasks).post(protect, createTask)
+router.route('/').get(protect, getTasks).post(createTask)
 router.route('/:id').put(protect, updateTasks).get(protect, getTaskById).delete(protect,admin, deleteTaskById)
 router.route('/bin/:id').put(protect, moveTaskstoBin)
 router.route('/restore/:id').put(protect, restoreTasks)

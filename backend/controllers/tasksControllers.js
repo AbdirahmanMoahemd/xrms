@@ -3,7 +3,15 @@ import Tasks from "../models/tasksModel.js";
 
 export const getTasks = expressAsync(async (req, res) => {
   try {
-    const tasks = await Tasks.find({bin:false});
+    const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+    const tasks = await Tasks.find({ ...keyword , bin:false}).sort({createdAt: -1});
 
     res.json({ tasks });
   } catch (error) {

@@ -3,7 +3,7 @@ import Store from "../models/storeModel.js";
 
 export const getStoreItems = expressAsync(async (req, res) => {
   try {
-    const items = await Store.find();
+    const items = await Store.find().sort({createdAt: -1});
 
     res.json({ items });
   } catch (error) {

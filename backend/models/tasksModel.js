@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const tasksSchema = mongoose.Schema(
   {
+    custID: {
+      type: Number,
+      require: true,
+      default:1
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
@@ -9,7 +14,7 @@ const tasksSchema = mongoose.Schema(
     name: {
       type: String,
       require: true,
-    },
+    }, 
     phone: {
       type: Number,
       require: true,

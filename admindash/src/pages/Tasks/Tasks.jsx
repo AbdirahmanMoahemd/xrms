@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   GET_TASKS_RESET,
+  TASK_CREATE_RESET,
   UPDATE_TASKS_STAGE_RESET,
 } from "../../constants/tasksConstants";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -24,6 +25,7 @@ import { FaRecycle } from "react-icons/fa";
 const Tasks = () => {
   const [id, setId] = useState(0);
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(false);
   const dispatch = useDispatch();
@@ -64,6 +66,7 @@ const Tasks = () => {
   } = tasksBin;
 
   useEffect(() => {
+    dispatch({ type: TASK_CREATE_RESET });
     dispatch({ type: GET_TASKS_RESET });
 
     if (!userInfo) {
@@ -73,10 +76,20 @@ const Tasks = () => {
       dispatch({ type: UPDATE_TASKS_STAGE_RESET });
       navigate("/tasks");
     } else {
-      dispatch(listTasks());
+      dispatch(listTasks(keyword));
       dispatch(listTasksInBin());
     }
-  }, [dispatch, navigate, successUpdate, userInfo, successDelete, successBinUpdate]);
+
+   
+  }, [
+    dispatch,
+    navigate,
+    keyword,
+    successUpdate,
+    userInfo,
+    successDelete,
+    successBinUpdate,
+  ]);
 
   const { currentColor } = useStateContext();
 
@@ -84,7 +97,7 @@ const Tasks = () => {
     navigate("/add-tasks");
   };
   const editconfirm = (id) => {
-    setId(id)
+    setId(id);
     confirmAlert({
       title: "Quick Edit or Full Edit",
       message: "",
@@ -102,10 +115,9 @@ const Tasks = () => {
   };
 
   const updateTaskStage = (stage) => {
-    
     if (stage !== "") {
       dispatch(updateTasksStage(id, stage));
-      setVisible(false)
+      setVisible(false);
     }
   };
 
@@ -125,7 +137,10 @@ const Tasks = () => {
     });
   };
 
- 
+  const submitHandler = (e) => {
+    e.preventDefault()
+    dispatch(listTasks(keyword));
+}
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
@@ -156,12 +171,13 @@ const Tasks = () => {
               </Link>
             )}
             <span className="px-1"></span>
-            <form className="w-full xl:max-w-xl max-w-lg flex relative">
+            <form className="w-full xl:max-w-xl max-w-lg flex relative" onSubmit={submitHandler}>
               <input
                 type="text"
                 className="input-box w-full"
-                placeholder="search"
+                placeholder="search by name"
                 style={{ borderColor: currentColor }}
+                onChange={(e) => setKeyword(e.target.value)}
               />
               <button
                 type="submit"
@@ -227,7 +243,7 @@ const Tasks = () => {
               <td></td>
             </tr>
           </thead>
-          
+
           {loading ? (
             <ProgressSpinner
               style={{ width: "20px", height: "20px" }}
@@ -240,6 +256,7 @@ const Tasks = () => {
           ) : (
             <>
               <tbody>
+                
                 {tasks.map((tasks) => (
                   <tr id={tasks._id}>
                     <td>{tasks.name}</td>
@@ -287,7 +304,10 @@ const Tasks = () => {
                       <Button
                         label=""
                         icon="pi pi-file-edit"
-                        onClick={() => editconfirm(tasks._id)}
+                        onClick={() =>{
+                           editconfirm(tasks._id)
+                           setStage(tasks.stage)
+                          }}
                       />
                       <Dialog
                         header="Quick Edit"
@@ -310,7 +330,7 @@ const Tasks = () => {
                           )}
 
                           <label className="text-gray-600 mb-2 block">
-                            Task Stage of {tasks.name}{" "}
+                            Task Stage
                           </label>
                           <div className="flex flex-wrap gap-3">
                             <div className="flex align-items-center">

@@ -67,7 +67,7 @@ export const createNewTask =
     }
   };
 
-export const listTasks = () => async (dispatch, getState) => {
+export const listTasks = (keyword = "") => async (dispatch, getState) => {
   try {
     dispatch({ type: GET_TASKS_REQUEST });
 
@@ -81,7 +81,7 @@ export const listTasks = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/tasks`, config);
+    const { data } = await axios.get(`/api/tasks?keyword=${keyword}`, config);
 
     dispatch({
       type: GET_TASKS_SUCCESS,

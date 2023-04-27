@@ -20,6 +20,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import {
   BIN_TASKS_RESET,
   GET_TASKS_RESET,
+  TASK_CREATE_RESET,
   UPDATE_TASKS_STAGE_RESET,
 } from "../constants/tasksConstants";
 import { confirmAlert } from "react-confirm-alert";
@@ -27,8 +28,8 @@ import { RadioButton } from "primereact/radiobutton";
 import { BiErrorAlt } from "react-icons/bi";
 
 const Ecommerce = () => {
-  
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
   const [visible, setVisible] = useState(false);
   const [id, setId] = useState(0);
   const [stage, setStage] = useState(0);
@@ -47,6 +48,13 @@ const Ecommerce = () => {
     error: errorUpdate,
     success: successUpdate,
   } = tasksUpdateStage;
+
+  const createTask = useSelector((state) => state.createTask);
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+  } = createTask;
 
   const tasksBin = useSelector((state) => state.tasksBin);
   const {
@@ -74,8 +82,10 @@ const Ecommerce = () => {
   let Delivered = 0;
 
   useEffect(() => {
+    dispatch({ type: TASK_CREATE_RESET });
     dispatch({ type: GET_TASKS_RESET });
 
+    
     dispatch({ type: BIN_TASKS_RESET });
 
     if (!userInfo) {
@@ -92,12 +102,11 @@ const Ecommerce = () => {
     navigate,
     successUpdate,
     userInfo,
+    keyword,
     successDelete,
     successBinUpdate,
-  
+    successCreate
   ]);
-
- 
 
   const editconfirm = (id) => {
     setId(id);
@@ -118,15 +127,14 @@ const Ecommerce = () => {
   };
 
   const updateTaskStage = (stage) => {
-
     if (stage !== "") {
-      dispatch(updateTasksStage(id,stage));
-      setVisible(false)
-      console.log(id)
+      dispatch(updateTasksStage(id, stage));
+      setVisible(false);
+      console.log(id);
     }
   };
 
-  console.log(id)
+  console.log(id);
 
   if (tasks) {
     for (let index = 0; index < tasks.length; index++) {
@@ -174,7 +182,10 @@ const Ecommerce = () => {
     });
   };
 
-  console.log(stage);
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(listTasks(keyword));
+  };
 
   return (
     <div className="mt-14">
@@ -269,12 +280,16 @@ const Ecommerce = () => {
         <div className="table-responsive " style={{ overflowX: "auto" }}>
           <center>
             {" "}
-            <form className="w-full xl:max-w-xl max-w-lg flex relative">
+            <form
+              className="w-full xl:max-w-xl max-w-lg flex relative"
+              onSubmit={submitHandler}
+            >
               <input
                 type="text"
                 className="input-box w-full"
-                placeholder="search"
+                placeholder="search by name"
                 style={{ borderColor: currentColor }}
+                onChange={(e) => setKeyword(e.target.value)}
               />
               <button
                 type="submit"
@@ -378,7 +393,10 @@ const Ecommerce = () => {
                         <Button
                           label=""
                           icon="pi pi-file-edit"
-                          onClick={() => editconfirm(tasks._id)}
+                          onClick={() =>{
+                            editconfirm(tasks._id)
+                            setStage(tasks.stage)
+                           }}
                         />
                         <Dialog
                           header="Quick Edit"
@@ -400,7 +418,7 @@ const Ecommerce = () => {
                           )}
 
                           <label className="text-gray-600 mb-2 block">
-                            Task Stage{stage}
+                            Task Stage
                           </label>
                           <div className="flex flex-wrap gap-3">
                             <div className="flex align-items-center">
@@ -470,9 +488,8 @@ const Ecommerce = () => {
                           />
                         ) : (
                           <Button
-                          
                             label=""
-                            icon="pi pi-delete-left" 
+                            icon="pi pi-delete-left"
                             onClick={() => deleteTask(tasks._id)}
                           />
                         )}
