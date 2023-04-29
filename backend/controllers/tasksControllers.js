@@ -11,7 +11,7 @@ export const getTasks = expressAsync(async (req, res) => {
         },
       }
     : {};
-    const tasks = await Tasks.find({ ...keyword , bin:false}).sort({createdAt: -1});
+    const tasks = await Tasks.find({ ...keyword , bin:false}).sort({createdAt: -1}).populate("user");
 
     res.json({ tasks });
   } catch (error) {

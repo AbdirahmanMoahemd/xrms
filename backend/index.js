@@ -6,6 +6,8 @@ import connectDB from './config/db.js';
 import userRoutes from '../backend/routes/userRoutes.js'
 import tasksRoutes from '../backend/routes/tasksRoutes.js'
 import storeRoutes from '../backend/routes/storeRoutes.js'
+import incomeRoutes from '../backend/routes/incomeRoutes.js'
+import expenseRoutes from '../backend/routes/expenseRoutes.js'
 import { errorHandler, notFound } from './middlewares/errorMidlleware.js';
 
 
@@ -26,6 +28,8 @@ app.use(express.json());
 app.use('/api/users', userRoutes)
 app.use('/api/tasks', tasksRoutes)
 app.use('/api/store', storeRoutes)
+app.use('/api/income', incomeRoutes)
+app.use('/api/expense', expenseRoutes)
 // app.use('/api/upload', uploadRoutes)
 
 

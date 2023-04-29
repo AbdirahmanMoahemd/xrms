@@ -27,6 +27,7 @@ const Tasks = () => {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
   const [visible, setVisible] = useState(false);
+  const [text, setText] = useState("");
   const [message, setMessage] = useState(false);
   const dispatch = useDispatch();
   const tasksList = useSelector((state) => state.tasksList);
@@ -79,8 +80,6 @@ const Tasks = () => {
       dispatch(listTasks(keyword));
       dispatch(listTasksInBin());
     }
-
-   
   }, [
     dispatch,
     navigate,
@@ -138,10 +137,10 @@ const Tasks = () => {
   };
 
   const submitHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(listTasks(keyword));
-}
-
+  };
+  console.log(tasks);
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header
@@ -171,7 +170,10 @@ const Tasks = () => {
               </Link>
             )}
             <span className="px-1"></span>
-            <form className="w-full xl:max-w-xl max-w-lg flex relative" onSubmit={submitHandler}>
+            <form
+              className="w-full xl:max-w-xl max-w-lg flex relative"
+              onSubmit={submitHandler}
+            >
               <input
                 type="text"
                 className="input-box w-full"
@@ -228,6 +230,17 @@ const Tasks = () => {
         )}
         {errorBinUpdate && <Message severity="error" text={errorBinUpdate} />}
         {errorBin && <Message severity="error" text={errorBin} />}
+
+        <Dialog
+          header="Comment"
+          visible={message}
+          onHide={() => setMessage(false)}
+          style={{ width: "50vw" }}
+          breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        >
+          <p className="m-0">{text}</p>
+        </Dialog>
+
         <table className="table">
           <thead>
             <tr>
@@ -239,6 +252,7 @@ const Tasks = () => {
               <td>Amount</td>
               <td></td>
               <td>Status</td>
+              {userInfo.role === 2 ? <td>CreatedBy</td> : ""}
               <td></td>
               <td></td>
             </tr>
@@ -254,158 +268,151 @@ const Tasks = () => {
           ) : error ? (
             <Message severity="error" text={error} />
           ) : (
-            <>
-              <tbody>
-                
-                {tasks.map((tasks) => (
-                  <tr id={tasks._id}>
-                    <td>{tasks.name}</td>
-                    <td>{tasks.phone}</td>
-                    <td>{tasks.item}</td>
-                    <td>{tasks.problem}</td>
-                    <td>{tasks.date.substring(0, 10)}</td>
-                    <td>${tasks.amount}</td>
-                    <td>
-                      <Button
-                        label=""
-                        icon="pi pi-comment"
-                        onClick={() => setMessage(true)}
-                      />
-                      <Dialog
-                        header="Comment"
-                        visible={message}
-                        onHide={() => setMessage(false)}
-                        style={{ width: "50vw" }}
-                        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-                      >
-                        <p className="m-0">{tasks.comment}</p>
-                      </Dialog>
-                    </td>
-                    <td>
-                      {tasks.stage === 0 ? (
-                        <p className="text-white bg-blue-600 text-center px-1">
-                          On Process
-                        </p>
-                      ) : tasks.stage === 1 ? (
-                        <p className="text-whit bg-yellow-300 text-center px-1">
-                          Finished
-                        </p>
-                      ) : tasks.stage === 2 ? (
-                        <p className="text-white bg-green-500 text-center px-1">
-                          Delivered
-                        </p>
-                      ) : (
-                        <p className="text-white bg-red-600 text-center  px-1">
-                          Unfinished
-                        </p>
-                      )}
-                    </td>
-                    <td>
-                      <Button
-                        label=""
-                        icon="pi pi-file-edit"
-                        onClick={() =>{
-                           editconfirm(tasks._id)
-                           setStage(tasks.stage)
-                          }}
-                      />
-                      <Dialog
-                        header="Quick Edit"
-                        visible={visible}
-                        onHide={() => setVisible(false)}
-                        style={{ width: "50vw" }}
-                        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-                      >
-                        <>
-                          {loadingUpdate && (
-                            <ProgressSpinner
-                              style={{ width: "20px", height: "20px" }}
-                              strokeWidth="6"
-                              fill="var(--surface-ground)"
-                              animationDuration=".5s"
-                            />
-                          )}
-                          {errorUpdate && (
-                            <Message severity="error" text={errorUpdate} />
-                          )}
-
-                          <label className="text-gray-600 mb-2 block">
-                            Task Stage
-                          </label>
-                          <div className="flex flex-wrap gap-3">
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient1"
-                                name="pizza"
-                                value={0}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 0}
-                              />
-                              <label htmlFor="ingredient1" className="ml-2">
-                                On Process
-                              </label>
-                            </div>
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient2"
-                                name="pizza"
-                                value={1}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 1}
-                              />
-                              <label htmlFor="ingredient2" className="ml-2">
-                                Finished
-                              </label>
-                            </div>
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient3"
-                                name="pizza"
-                                value={2}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 2}
-                              />
-                              <label htmlFor="ingredient3" className="ml-2">
-                                Delivired
-                              </label>
-                            </div>
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient3"
-                                name="pizza"
-                                value={3}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 3}
-                              />
-                              <label htmlFor="ingredient4" className="ml-2">
-                                Unfinished
-                              </label>
-                            </div>
-                          </div>
-                          <div className="mt-4 flex justify-center">
-                            <button
-                              onClick={() => updateTaskStage(stage)}
-                              className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
-                            >
-                              Update
-                            </button>
-                          </div>
-                        </>
-                      </Dialog>
-                    </td>
-                    <td>
-                      <Button
-                        label=""
-                        icon="pi pi-delete-left"
-                        onClick={() => binTask(tasks._id)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </>
+            <tbody>
+              {tasks.map((tasks) => (
+                <tr id={tasks._id}>
+                  <td>{tasks.name}</td>
+                  <td>{tasks.phone}</td>
+                  <td>{tasks.item}</td>
+                  <td>{tasks.problem}</td>
+                  <td>{tasks.date.substring(0, 10)}</td>
+                  <td>${tasks.amount}</td>
+                  <td>
+                    <Button
+                      label=""
+                      icon="pi pi-comment"
+                      onClick={() => {
+                        setMessage(true);
+                        setText(tasks.comment);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    {tasks.stage === 0 ? (
+                      <p className="text-white bg-blue-600 text-center px-1">
+                        On Process
+                      </p>
+                    ) : tasks.stage === 1 ? (
+                      <p className="text-whit bg-yellow-300 text-center px-1">
+                        Finished
+                      </p>
+                    ) : tasks.stage === 2 ? (
+                      <p className="text-white bg-green-500 text-center px-1">
+                        Delivered
+                      </p>
+                    ) : (
+                      <p className="text-white bg-red-600 text-center  px-1">
+                        Unfinished
+                      </p>
+                    )}
+                  </td>
+                  {userInfo.role === 2 ? (
+                    <td>{tasks.user ? tasks.user.name.split(" ")[0] : ""}</td>
+                  ) : (
+                    ""
+                  )}
+                  <td>
+                    <Button
+                      label=""
+                      icon="pi pi-file-edit"
+                      onClick={() => {
+                        editconfirm(tasks._id);
+                        setStage(tasks.stage);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      label=""
+                      icon="pi pi-delete-left"
+                      onClick={() => binTask(tasks._id)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           )}
         </table>
+
+        <Dialog
+          header="Quick Edit"
+          visible={visible}
+          onHide={() => setVisible(false)}
+          style={{ width: "50vw" }}
+          breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        >
+          <>
+            {loadingUpdate && (
+              <ProgressSpinner
+                style={{ width: "20px", height: "20px" }}
+                strokeWidth="6"
+                fill="var(--surface-ground)"
+                animationDuration=".5s"
+              />
+            )}
+            {errorUpdate && <Message severity="error" text={errorUpdate} />}
+
+            <label className="text-gray-600 mb-2 block">Task Stage</label>
+            <div className="flex flex-wrap gap-3">
+              <div className="flex align-items-center">
+                <RadioButton
+                  inputId="ingredient1"
+                  name="pizza"
+                  value={0}
+                  onChange={(e) => setStage(e.value)}
+                  checked={stage === 0}
+                />
+                <label htmlFor="ingredient1" className="ml-2">
+                  On Process
+                </label>
+              </div>
+              <div className="flex align-items-center">
+                <RadioButton
+                  inputId="ingredient2"
+                  name="pizza"
+                  value={1}
+                  onChange={(e) => setStage(e.value)}
+                  checked={stage === 1}
+                />
+                <label htmlFor="ingredient2" className="ml-2">
+                  Finished
+                </label>
+              </div>
+              <div className="flex align-items-center">
+                <RadioButton
+                  inputId="ingredient3"
+                  name="pizza"
+                  value={2}
+                  onChange={(e) => setStage(e.value)}
+                  checked={stage === 2}
+                />
+                <label htmlFor="ingredient3" className="ml-2">
+                  Delivired
+                </label>
+              </div>
+              <div className="flex align-items-center">
+                <RadioButton
+                  inputId="ingredient3"
+                  name="pizza"
+                  value={3}
+                  onChange={(e) => setStage(e.value)}
+                  checked={stage === 3}
+                />
+                <label htmlFor="ingredient4" className="ml-2">
+                  Unfinished
+                </label>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={() => updateTaskStage(stage)}
+                className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+              >
+                Update
+              </button>
+            </div>
+          </>
+        </Dialog>
       </div>
     </div>
   );

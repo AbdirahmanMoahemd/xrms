@@ -49,7 +49,7 @@ export const createTaskReducer = (state = {}, action) => {
   }
 };
 
-export const tasksListReducer = (state = { tasks: [] }, action) => {
+export const tasksListReducer = (state = { tasks: [{ user: [] }] }, action) => {
   switch (action.type) {
     case GET_TASKS_REQUEST:
       return { loading: true };
@@ -66,7 +66,6 @@ export const tasksListReducer = (state = { tasks: [] }, action) => {
       return state;
   }
 };
-
 
 export const tasksListInBinReducer = (state = { tasks: [] }, action) => {
   switch (action.type) {
@@ -86,8 +85,6 @@ export const tasksListInBinReducer = (state = { tasks: [] }, action) => {
   }
 };
 
-
-
 export const taskDeleteReducer = (state = {}, action) => {
   switch (action.type) {
     case TASK_DELETE_REQUEST:
@@ -101,8 +98,7 @@ export const taskDeleteReducer = (state = {}, action) => {
   }
 };
 
-
-export const tasksBinReducer = (state = { }, action) => {
+export const tasksBinReducer = (state = {}, action) => {
   switch (action.type) {
     case BIN_TASKS_REQUEST:
       return { loading: true };
@@ -117,8 +113,7 @@ export const tasksBinReducer = (state = { }, action) => {
   }
 };
 
-
-export const tasksUnBinReducer = (state = { }, action) => {
+export const tasksUnBinReducer = (state = {}, action) => {
   switch (action.type) {
     case UNBIN_TASKS_REQUEST:
       return { loading: true };
@@ -148,10 +143,6 @@ export const tasksUpdateReducer = (state = { task: {} }, action) => {
   }
 };
 
-
-
-
-
 export const tasksDetailsReducer = (state = { task: {} }, action) => {
   switch (action.type) {
     case TASK_DETAILS_REQUEST:
@@ -172,7 +163,7 @@ export const tasksUpdateStageReducer = (state = { task: {} }, action) => {
     case UPDATE_TASKS_STAGE_SUCCESS:
       return { loading: false, success: true, task: action.payload };
     case UPDATE_TASKS_STAGE_RESET:
-      return { task: {} }; 
+      return { task: {} };
     case UPDATE_TASKS_STAGE_FAIL:
       return { loading: false, error: action.payload };
     default:

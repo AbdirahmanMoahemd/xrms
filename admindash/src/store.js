@@ -18,6 +18,8 @@ import {
 
 import {createTaskReducer, taskDeleteReducer, tasksBinReducer, tasksDetailsReducer, tasksListInBinReducer, tasksListReducer, tasksUnBinReducer, tasksUpdateReducer, tasksUpdateStageReducer} from './reducers/tasksReducers'
 import { createStoreItemReducer, storeItemDeleteReducer, storeItemDetailsReducer, storeItemListReducer, storeItemUpdateReducer } from "./reducers/storeReducers";
+import { createIncomeItemReducer, incomeItemDeleteReducer, incomeItemDetailsReducer, incomeItemListReducer, incomeItemUpdateReducer } from "./reducers/incomeReducers";
+import { blanceReducerCount, createExpenseItemReducer, expenseItemDeleteReducer, expenseItemDetailsReducer, expenseItemListReducer, expenseItemUpdateReducer } from "./reducers/expenseReducers";
 
 
 const reducer = combineReducers({
@@ -48,7 +50,28 @@ const reducer = combineReducers({
   storeItemList:storeItemListReducer,
   storeItemDelete:storeItemDeleteReducer,
   storeItemUpdate:storeItemUpdateReducer,
-  storeItemDetails:storeItemDetailsReducer
+  storeItemDetails:storeItemDetailsReducer,
+
+
+  createIncomeItem:createIncomeItemReducer,
+  incomeItemList:incomeItemListReducer,
+  incomeItemDelete:incomeItemDeleteReducer,
+  incomeItemUpdate:incomeItemUpdateReducer,
+  incomeItemDetails:incomeItemDetailsReducer,
+
+  createExpenseItem:createExpenseItemReducer,
+  expenseItemList:expenseItemListReducer,
+  expenseItemDelete:expenseItemDeleteReducer,
+  expenseItemUpdate:expenseItemUpdateReducer,
+  expenseItemDetails:expenseItemDetailsReducer,
+
+
+  blanceCount:blanceReducerCount
+
+
+
+
+
   
 });
 

@@ -18,6 +18,12 @@ import AddStoreItem from "./pages/store/add_store_item";
 import UpdateStoreItem from "./pages/store/update_store_item";
 import Tasks from "./pages/Tasks/Tasks";
 import Ecommerce from "./pages/Ecommerce";
+import IncomeScreen from "./pages/income/income";
+import ExpenseScreen from "./pages/expense/expense";
+import AddIncome from "./pages/income/add_income";
+import UpdateIncome from "./pages/income/update_income";
+import AddExpense from "./pages/expense/add_expense";
+import UpdateExpense from "./pages/expense/update_expense";
 
 const App = () => {
   const {
@@ -104,6 +110,22 @@ const App = () => {
                   <Route path="/tasks" element={<Tasks />} />
                   <Route path="/add-tasks" element={<AddTasks />} />
                   <Route path="/update-tasks/:id" element={<UpdateTask />} />
+                  <Route path="/recycle-bin" element={<BinTasks />} />
+
+
+                  <Route path="/income" element={<IncomeScreen />} />
+                  <Route path="/add-income" element={<AddIncome />} />
+                  <Route path="/update-income/:id" element={<UpdateIncome />} />
+
+
+                  <Route path="/expense" element={<ExpenseScreen />} />
+                  <Route path="/add-expense" element={<AddExpense />} />
+                  <Route path="/update-expense/:id" element={<UpdateExpense />} />
+
+
+
+                  <Route path="/expenses" element={<ExpenseScreen />} />
+                  <Route path="/recycle-bin" element={<BinTasks />} />
                   <Route path="/recycle-bin" element={<BinTasks />} />
 
 

@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Header } from "../../components";
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { listStoreItemDetails, updateStoreItem } from "../../actions/storeActions";
-import { STORE_UPDATE_RESET } from "../../constants/storeConstants";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  listIncomeItemDetails,
+  updateIncomeItem,
+} from "../../actions/incomeActions";
+import DatePicker from "react-date-picker";
+import { INCOME_UPDATE_RESET } from "../../constants/incomeConstants";
 
-const UpdateStoreItem = () => {
+const UpdateIncome = () => {
   const { id } = useParams();
-  const [name, setName] = useState("");
-  const [cost, setCost] = useState(0);
-  const [selling, setSelling] = useState(0);
-  const [countInStock, setCountInStock] = useState(0);
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState("");
+  const [type, setType] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [ref, setRef] = useState("");
 
   const navigate = useNavigate();
 
@@ -21,51 +26,50 @@ const UpdateStoreItem = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const storeItemDetails = useSelector((state) => state.storeItemDetails);
-  const { loading, error, item } = storeItemDetails;
-
-  const storeItemUpdate = useSelector((state) => state.storeItemUpdate);
+  const incomeItemUpdate = useSelector((state) => state.incomeItemUpdate);
   const {
     loading: loadingUpdate,
     error: errorUpdate,
     success: successUpdate,
-  } = storeItemUpdate;
+  } = incomeItemUpdate;
+
+  const incomeItemDetails = useSelector((state) => state.incomeItemDetails);
+  const { loading, error, item } = incomeItemDetails;
 
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");
     }
     if (successUpdate) {
-      dispatch({ type: STORE_UPDATE_RESET });
-      navigate("/store");
+      dispatch({ type: INCOME_UPDATE_RESET });
+      navigate("/income");
     } else {
-      if (!item.name || item._id !== id) {
-        dispatch(listStoreItemDetails(id));
+      if (!item.title || item._id !== id) {
+        dispatch(listIncomeItemDetails(id));
       } else {
-        setName(item.name);
-        setCost(item.cost);
-        setSelling(item.selling);
-        setCountInStock(item.countInStock);
+        setTitle(item.title);
+        setAmount(item.amount);
+        setType(item.type);
+        setDate(item.date);
+        setRef(item.ref);
       }
     }
-  }, [dispatch, navigate,userInfo, successUpdate, id, item]);
-
- 
+  }, [dispatch, navigate, userInfo, successUpdate, id, item]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(
-      updateStoreItem(id, name, selling, cost, countInStock)
-    );
+    // DISPACTH REGISTER
+    dispatch(updateIncomeItem(id, title, amount, type, date, ref));
   };
+
 
   return (
     <div className="container m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-2xl">
       {/* <!-- checkout form --> */}
-      <Header category="Add" title="Store Item" />
+      <Header category="Update" title="Income" />
       <div className="lg:col-span-8 border border-gray-200 px-4 py-4 rounded">
         <form onSubmit={submitHandler}>
-        {loadingUpdate && (
+          {loadingUpdate && (
             <ProgressSpinner
               style={{ width: "20px", height: "20px" }}
               strokeWidth="6"
@@ -74,7 +78,6 @@ const UpdateStoreItem = () => {
             />
           )}
           {errorUpdate && <Message severity="error" text={errorUpdate} />}
-
           {loading ? (
             <ProgressSpinner
               style={{ width: "20px", height: "20px" }}
@@ -88,56 +91,61 @@ const UpdateStoreItem = () => {
           <div className="space-y-4">
             <div>
               <label className="text-gray-600 mb-2 block">
-                Name <span className="text-primary">*</span>
+                Title <span className="text-primary">*</span>
               </label>
               <input
                 type="text"
-                value={name}
+                value={title}
                 className="input-box w-full"
                 placeholder="Item name"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 required
               />
             </div>
 
             <div>
               <label className="text-gray-600 mb-2 block">
-                Cost Price <span className="text-primary">*</span>
+                Amount <span className="text-primary">*</span>
               </label>
               <input
                 type="text"
-                value={cost}
+                value={amount}
                 className="input-box w-full"
-                placeholder="phone number"
-                onChange={(e) => setCost(e.target.value)}
+                placeholder="amount"
+                onChange={(e) => setAmount(e.target.value)}
                 required
               />
             </div>
 
             <div>
               <label className="text-gray-600 mb-2 block">
-                Selling Price <span className="text-primary">*</span>
+                Type <span className="text-primary">*</span>
               </label>
               <input
                 type="text"
-                value={selling}
+                value={type}
                 className="input-box w-full"
-                placeholder="Selling Price"
-                onChange={(e) => setSelling(e.target.value)}
+                placeholder="type"
+                onChange={(e) => setType(e.target.value)}
                 required
               />
             </div>
             <div>
               <label className="text-gray-600 mb-2 block">
-                CountInStock <span className="text-primary">*</span>
+                Date <span className="text-primary">*</span>
               </label>
-              <input
+              <DatePicker onChange={setDate} value={date} />
+            </div>
+            <div>
+              <label className="text-gray-600 mb-2 block">Reference.</label>
+              <textarea
                 type="text"
                 className="input-box w-full"
-                placeholder="countInStock"
-                value={countInStock}
-                onChange={(e) => setCountInStock(e.target.value)}
-                required
+                placeholder="reference"
+                value={ref}
+                onChange={(e) => setRef(e.target.value)}
+                cols="40"
+                rows="5"
               />
             </div>
 
@@ -146,7 +154,7 @@ const UpdateStoreItem = () => {
                 type="submit"
                 className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
               >
-                Save
+                Update
               </button>
             </div>
           </div>
@@ -158,4 +166,4 @@ const UpdateStoreItem = () => {
   );
 };
 
-export default UpdateStoreItem;
+export default UpdateIncome;

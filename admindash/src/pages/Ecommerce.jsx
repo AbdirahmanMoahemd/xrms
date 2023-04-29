@@ -26,12 +26,16 @@ import {
 import { confirmAlert } from "react-confirm-alert";
 import { RadioButton } from "primereact/radiobutton";
 import { BiErrorAlt } from "react-icons/bi";
+import { FcMoneyTransfer } from "react-icons/fc";
+import { FaMoneyBill } from "react-icons/fa";
+import { getBlance } from "../actions/expenseActions";
 
 const Ecommerce = () => {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
   const [visible, setVisible] = useState(false);
   const [id, setId] = useState(0);
+  const [text, setText] = useState("");
   const [stage, setStage] = useState(0);
   const [message, setMessage] = useState(false);
 
@@ -50,11 +54,7 @@ const Ecommerce = () => {
   } = tasksUpdateStage;
 
   const createTask = useSelector((state) => state.createTask);
-  const {
-    loading: loadingCreate,
-    error: errorCreate,
-    success: successCreate,
-  } = createTask;
+  const { success: successCreate } = createTask;
 
   const tasksBin = useSelector((state) => state.tasksBin);
   const {
@@ -62,6 +62,14 @@ const Ecommerce = () => {
     error: errorBinUpdate,
     success: successBinUpdate,
   } = tasksBin;
+
+  const blanceCount = useSelector((state) => state.blanceCount);
+  const {
+    counter
+  } = blanceCount;
+
+
+  
 
   const taskDelete = useSelector((state) => state.taskDelete);
   const {
@@ -85,7 +93,6 @@ const Ecommerce = () => {
     dispatch({ type: TASK_CREATE_RESET });
     dispatch({ type: GET_TASKS_RESET });
 
-    
     dispatch({ type: BIN_TASKS_RESET });
 
     if (!userInfo) {
@@ -96,6 +103,7 @@ const Ecommerce = () => {
       navigate("/");
     } else {
       dispatch(listTasks());
+      dispatch(getBlance());
     }
   }, [
     dispatch,
@@ -105,8 +113,9 @@ const Ecommerce = () => {
     keyword,
     successDelete,
     successBinUpdate,
-    successCreate
+    successCreate,
   ]);
+ 
 
   const editconfirm = (id) => {
     setId(id);
@@ -189,24 +198,25 @@ const Ecommerce = () => {
 
   return (
     <div className="mt-14">
-      <div className="flex flex-wrap lg:flex-nowrap justify-between m-10">
-        <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-bold text-gray-400">on Process Tasks</p>
-              <p className="text-2xl">{process}</p>
+      <>
+        <div className="flex flex-wrap lg:flex-nowrap justify-between m-10">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-bold text-gray-400">on Process Tasks</p>
+                <p className="text-2xl">{process}</p>
+              </div>
+              <button
+                type="button"
+                style={{ backgroundColor: currentColor }}
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+              >
+                <MdPendingActions />
+              </button>
             </div>
-            <button
-              type="button"
-              style={{ backgroundColor: currentColor }}
-              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
-            >
-              <MdPendingActions />
-            </button>
           </div>
-        </div>
-        <div className="lg:flex w-full">
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl   p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-bold text-gray-400">Finished Tasks</p>
@@ -221,7 +231,7 @@ const Ecommerce = () => {
               </button>
             </div>
           </div>
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl   p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-bold text-gray-400">UnFinished Tasks</p>
@@ -236,39 +246,72 @@ const Ecommerce = () => {
               </button>
             </div>
           </div>
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-bold text-gray-400">Delivered Tasks</p>
+                <p className="text-2xl">{Delivered}</p>
+              </div>
+              <button
+                type="button"
+                style={{ backgroundColor: currentColor }}
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+              >
+                <AiOutlineFileDone />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-bold text-gray-400">Delivered Tasks</p>
-              <p className="text-2xl">{Delivered}</p>
+        <div className="flex flex-wrap lg:flex-nowrap justify-between m-10">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-bold text-gray-400">Income</p>
+                <p className="text-2xl">${counter.totalIncome}</p>
+              </div>
+              <button
+                type="button"
+                style={{ backgroundColor: currentColor }}
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+              >
+                <FcMoneyTransfer />
+              </button>
             </div>
-            <button
-              type="button"
-              style={{ backgroundColor: currentColor }}
-              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
-            >
-              <AiOutlineFileDone />
-            </button>
+          </div>
+
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-bold text-gray-400">Expense</p>
+                <p className="text-2xl">${counter.totalExpense}</p>
+              </div>
+              <button
+                type="button"
+                style={{ backgroundColor: currentColor }}
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+              >
+                <FaMoneyBill />
+              </button>
+            </div>
+          </div>
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-bold text-gray-400">Blance</p>
+                <p className="text-2xl">${counter.blance}</p>
+              </div>
+              <button
+                type="button"
+                style={{ backgroundColor: currentColor }}
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+              >
+                <BsCurrencyDollar />
+              </button>
+            </div>
           </div>
         </div>
-        <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-bold text-gray-400">Earnings</p>
-              <p className="text-2xl">$63,448.78</p>
-            </div>
-            <button
-              type="button"
-              style={{ backgroundColor: currentColor }}
-              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
-            >
-              <BsCurrencyDollar />
-            </button>
-          </div>
-        </div>
-      </div>
+      </>
       <div className="md:m-10 mt-24 p-4 md:p-10 bg-white rounded-3xl m-2">
         <Header
           category=""
@@ -352,23 +395,17 @@ const Ecommerce = () => {
                       <td>{tasks.phone}</td>
                       <td>{tasks.item}</td>
                       <td>{tasks.problem}</td>
-                      <td>{tasks.date.substring(0, 10)}</td>
+                      <td>{tasks.date ? tasks.date.substring(0, 10) : ""}</td>
                       <td>${tasks.amount}</td>
                       <td>
                         <Button
                           label=""
                           icon="pi pi-comment"
-                          onClick={() => setMessage(true)}
+                          onClick={() => {
+                            setMessage(true);
+                            setText(tasks.comment)
+                          }}
                         />
-                        <Dialog
-                          header="Comment"
-                          visible={message}
-                          onHide={() => setMessage(false)}
-                          style={{ width: "50vw" }}
-                          breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-                        >
-                          <p className="m-0">{tasks.comment}</p>
-                        </Dialog>
                       </td>
                       <td>
                         {tasks.stage === 0 ? (
@@ -393,91 +430,11 @@ const Ecommerce = () => {
                         <Button
                           label=""
                           icon="pi pi-file-edit"
-                          onClick={() =>{
-                            editconfirm(tasks._id)
-                            setStage(tasks.stage)
-                           }}
+                          onClick={() => {
+                            editconfirm(tasks._id);
+                            setStage(tasks.stage);
+                          }}
                         />
-                        <Dialog
-                          header="Quick Edit"
-                          visible={visible}
-                          onHide={() => setVisible(false)}
-                          style={{ width: "50vw" }}
-                          breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-                        >
-                          {loadingUpdate && (
-                            <ProgressSpinner
-                              style={{ width: "20px", height: "20px" }}
-                              strokeWidth="6"
-                              fill="var(--surface-ground)"
-                              animationDuration=".5s"
-                            />
-                          )}
-                          {errorUpdate && (
-                            <Message severity="error" text={errorUpdate} />
-                          )}
-
-                          <label className="text-gray-600 mb-2 block">
-                            Task Stage
-                          </label>
-                          <div className="flex flex-wrap gap-3">
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient1"
-                                name="pizza"
-                                value={0}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 0}
-                              />
-                              <label htmlFor="ingredient1" className="ml-2">
-                                On Process
-                              </label>
-                            </div>
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient2"
-                                name="pizza"
-                                value={1}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 1}
-                              />
-                              <label htmlFor="ingredient2" className="ml-2">
-                                Finished
-                              </label>
-                            </div>
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient3"
-                                name="pizza"
-                                value={2}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 2}
-                              />
-                              <label htmlFor="ingredient3" className="ml-2">
-                                Delivired
-                              </label>
-                            </div>
-                            <div className="flex align-items-center">
-                              <RadioButton
-                                inputId="ingredient3"
-                                name="pizza"
-                                value={3}
-                                onChange={(e) => setStage(e.value)}
-                                checked={stage === 3}
-                              />
-                              <label htmlFor="ingredient4" className="ml-2">
-                                Unfinished
-                              </label>
-                            </div>
-                          </div>
-                          <div className="mt-4 flex justify-center">
-                            <Button
-                              label="Update"
-                              icon=""
-                              onClick={() => updateTaskStage(stage)}
-                            />
-                          </div>
-                        </Dialog>
                       </td>
                       <td>
                         {userInfo.role === 1 ? (
@@ -500,6 +457,96 @@ const Ecommerce = () => {
               </>
             )}
           </table>
+
+          <Dialog
+            header="Quick Edit"
+            visible={visible}
+            onHide={() => setVisible(false)}
+            style={{ width: "50vw" }}
+            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+          >
+            <>
+              {loadingUpdate && (
+                <ProgressSpinner
+                  style={{ width: "20px", height: "20px" }}
+                  strokeWidth="6"
+                  fill="var(--surface-ground)"
+                  animationDuration=".5s"
+                />
+              )}
+              {errorUpdate && <Message severity="error" text={errorUpdate} />}
+
+              <label className="text-gray-600 mb-2 block">Task Stage</label>
+              <div className="flex flex-wrap gap-3">
+                <div className="flex align-items-center">
+                  <RadioButton
+                    inputId="ingredient1"
+                    name="pizza"
+                    value={0}
+                    onChange={(e) => setStage(e.value)}
+                    checked={stage === 0}
+                  />
+                  <label htmlFor="ingredient1" className="ml-2">
+                    On Process
+                  </label>
+                </div>
+                <div className="flex align-items-center">
+                  <RadioButton
+                    inputId="ingredient2"
+                    name="pizza"
+                    value={1}
+                    onChange={(e) => setStage(e.value)}
+                    checked={stage === 1}
+                  />
+                  <label htmlFor="ingredient2" className="ml-2">
+                    Finished
+                  </label>
+                </div>
+                <div className="flex align-items-center">
+                  <RadioButton
+                    inputId="ingredient3"
+                    name="pizza"
+                    value={2}
+                    onChange={(e) => setStage(e.value)}
+                    checked={stage === 2}
+                  />
+                  <label htmlFor="ingredient3" className="ml-2">
+                    Delivired
+                  </label>
+                </div>
+                <div className="flex align-items-center">
+                  <RadioButton
+                    inputId="ingredient3"
+                    name="pizza"
+                    value={3}
+                    onChange={(e) => setStage(e.value)}
+                    checked={stage === 3}
+                  />
+                  <label htmlFor="ingredient4" className="ml-2">
+                    Unfinished
+                  </label>
+                </div>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={() => updateTaskStage(stage)}
+                  className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                >
+                  Update
+                </button>
+              </div>
+            </>
+          </Dialog>
+
+          <Dialog
+            header="Comment"
+            visible={message}
+            onHide={() => setMessage(false)}
+            style={{ width: "50vw" }}
+            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+          >
+            <p className="m-0">{text}</p>
+          </Dialog>
         </div>
       </div>
     </div>

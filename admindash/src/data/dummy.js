@@ -15,11 +15,11 @@ import {
   BsShield,
   BsChatLeft,
 } from "react-icons/bs";
-import {   FaUsers } from "react-icons/fa"
+import {   FaMoneyBill, FaUsers } from "react-icons/fa"
 import { MdOutlineSupervisorAccount } from "react-icons/md";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { TiTick } from "react-icons/ti";
-import { FcParallelTasks } from "react-icons/fc";
+import { FcMoneyTransfer, FcParallelTasks } from "react-icons/fc";
 import { GrLocation } from "react-icons/gr";
 import avatar from "./avatar.jpg";
 import avatar2 from "./avatar2.jpg";
@@ -546,6 +546,16 @@ export const Adminlinks = [
     name: "Tasks Events",
     text: "tasks-events",
     icon: <FcParallelTasks />,
+  },
+  {
+    name: "Income",
+    text: "income",
+    icon: <FcMoneyTransfer />,
+  },
+  {
+    name: "Expenses",
+    text: "expenses",
+    icon: <FaMoneyBill />,
   },
   {
     name: "Users",
