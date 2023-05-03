@@ -4,6 +4,7 @@ import { login } from "../actions/userActions";
 import { Message } from "primereact/message";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useLocation, useNavigate } from "react-router-dom";
+import background from '../data/background.jpeg';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -38,8 +39,14 @@ const Login = () => {
   return (
     <>
       {/* <!-- form wrapper --> */}
-      <div className="container mt-40">
-        <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
+      <div style={{backgroundImage: `url(${background})`,backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        width: '100vw',
+        height: '100vh'}}>
+      <div className="container ">
+     <div className="pt-[15%]">
+        <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden bg-white ">
           <center>
             {" "}
             <h2 className="text-2xl uppercase font-medium mb-1">LOGIN</h2>
@@ -116,6 +123,9 @@ const Login = () => {
             </div>
           </form>
         </div>
+      </div>
+      
+      </div>
       </div>
       {/* <!-- form wrapper end --> */}
     </>
