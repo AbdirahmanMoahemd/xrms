@@ -76,22 +76,16 @@ const reducer = combineReducers({
 });
 
 
-const userInfoFormStorage = localStorage.getItem("xrm-userInfo")
-  ? JSON.parse(localStorage.getItem("xrm-userInfo"))
-  : "";
 
 
 
-const initialState = {
- 
-  userLogin: { userInfo: userInfoFormStorage },
-};
+
 
 const middleware = [thunk];
 
 const store = createStore(
   reducer,
-  initialState,
+  
   composeWithDevTools(applyMiddleware(...middleware))
 );
 

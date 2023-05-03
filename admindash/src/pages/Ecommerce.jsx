@@ -29,10 +29,20 @@ import { BiErrorAlt } from "react-icons/bi";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { FaMoneyBill } from "react-icons/fa";
 import { getBlance } from "../actions/expenseActions";
+import DatePicker from "react-date-picker";
 
 const Ecommerce = () => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState();
+  const [item, setItem] = useState("");
+  const [problem, setProblem] = useState("");
+  const [comment, setComment] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [amount, setAmount] = useState();
+
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
+  const [create, setCreate] = useState(false);
   const [visible, setVisible] = useState(false);
   const [id, setId] = useState(0);
   const [text, setText] = useState("");
@@ -54,7 +64,11 @@ const Ecommerce = () => {
   } = tasksUpdateStage;
 
   const createTask = useSelector((state) => state.createTask);
-  const { success: successCreate } = createTask;
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+  } = createTask;
 
   const tasksBin = useSelector((state) => state.tasksBin);
   const {
@@ -64,12 +78,7 @@ const Ecommerce = () => {
   } = tasksBin;
 
   const blanceCount = useSelector((state) => state.blanceCount);
-  const {
-    counter
-  } = blanceCount;
-
-
-  
+  const { counter } = blanceCount;
 
   const taskDelete = useSelector((state) => state.taskDelete);
   const {
@@ -81,7 +90,8 @@ const Ecommerce = () => {
   const { currentColor } = useStateContext();
 
   const onClickFn = () => {
-    navigate("/add-tasks");
+    // navigate("/add-tasks");
+    setCreate(true);
   };
 
   let process = 0;
@@ -115,7 +125,6 @@ const Ecommerce = () => {
     successBinUpdate,
     successCreate,
   ]);
- 
 
   const editconfirm = (id) => {
     setId(id);
@@ -403,7 +412,7 @@ const Ecommerce = () => {
                           icon="pi pi-comment"
                           onClick={() => {
                             setMessage(true);
-                            setText(tasks.comment)
+                            setText(tasks.comment);
                           }}
                         />
                       </td>
@@ -546,6 +555,135 @@ const Ecommerce = () => {
             breakpoints={{ "960px": "75vw", "641px": "100vw" }}
           >
             <p className="m-0">{text}</p>
+          </Dialog>
+
+          {/* create ticket */}
+          <Dialog
+            header="Add New Ticket"
+            visible={create}
+            onHide={() => setCreate(false)}
+            style={{ width: "50vw" }}
+            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+          >
+            <form onSubmit={submitHandler}>
+              {loadingCreate && (
+                <ProgressSpinner
+                  style={{ width: "20px", height: "20px" }}
+                  strokeWidth="6"
+                  fill="var(--surface-ground)"
+                  animationDuration=".5s"
+                />
+              )}
+              {errorCreate && <Message severity="error" text={errorCreate} />}
+              <div className="space-y-4 ">
+                <div>
+                  <label className="text-gray-600 mb-2 block">
+                    Full Name <span className="text-primary">*</span>
+                  </label>
+                  <div className="flex space-x-4">
+                    <input
+                      type="text"
+                      value={name}
+                      className="input-box lg:w-5/6 md:w-2/3 sm:w-1/2"
+                      placeholder="full name"
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+
+                    <Button
+                      className="lg:w-1/6 md:w-1/3 sm:w-1/2"
+                      label="Search"
+                      icon="pi pi-spin pi-spinner"
+                      style={{backgroundColor: currentColor}}
+                    />
+                    
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-gray-600 mb-2 block">
+                    Phone Number <span className="text-primary">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={phone}
+                    className="input-box w-full"
+                    placeholder="phone number"
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-gray-600 mb-2 block">
+                    Item name <span className="text-primary">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={item}
+                    className="input-box w-full"
+                    placeholder="item name"
+                    onChange={(e) => setItem(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-gray-600 mb-2 block">
+                    Problem Type <span className="text-primary">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="input-box w-full"
+                    placeholder="problem type"
+                    value={problem}
+                    onChange={(e) => setProblem(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-gray-600 mb-2 block">
+                    Date <span className="text-primary">*</span>
+                  </label>
+                  <DatePicker onChange={setDate} value={date} />
+                </div>
+
+                <div>
+                  <label className="text-gray-600 mb-2 block">
+                    Amount <span className="text-primary">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="input-box w-full"
+                    placeholder="amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-gray-600 mb-2 block">Comment.</label>
+                  <textarea
+                    type="text"
+                    className="input-box w-full"
+                    placeholder="comment"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    cols="40"
+                    rows="5"
+                  />
+                </div>
+
+                <div className="mt-4 flex justify-center">
+                  <button
+                    type="submit"
+                    className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </form>
           </Dialog>
         </div>
       </div>

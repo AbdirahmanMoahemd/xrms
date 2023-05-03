@@ -55,11 +55,17 @@ const App = () => {
   
   }, [userInfo, navigate, setCurrentColor, setCurrentMode]);
 
- 
+  window.addEventListener("beforeunload", (ev) => 
+  {  
+      ev.preventDefault();
+      return ev.returnValue = 'Are you sure you want to close?';
+  });
 
   
 
   return (
+
+
     
     <div className={currentMode === "Dark" ? "dark" : ""}>
      {userInfo ?
