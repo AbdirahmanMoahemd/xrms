@@ -24,6 +24,7 @@ import AddIncome from "./pages/income/add_income";
 import UpdateIncome from "./pages/income/update_income";
 import AddExpense from "./pages/expense/add_expense";
 import UpdateExpense from "./pages/expense/update_expense";
+import Customers from "./pages/customers/customers";
 
 const App = () => {
   const {
@@ -117,6 +118,10 @@ const App = () => {
                   <Route path="/add-tasks" element={<AddTasks />} />
                   <Route path="/update-tasks/:id" element={<UpdateTask />} />
                   <Route path="/recycle-bin" element={<BinTasks />} />
+
+
+
+                  <Route path="/customers" element={<Customers />} />
 
 
                   <Route path="/income" element={<IncomeScreen />} />

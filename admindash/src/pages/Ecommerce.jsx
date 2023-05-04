@@ -30,6 +30,7 @@ import { FcMoneyTransfer } from "react-icons/fc";
 import { FaMoneyBill } from "react-icons/fa";
 import { getBlance } from "../actions/expenseActions";
 import DatePicker from "react-date-picker";
+import { AutoComplete } from "primereact/autocomplete";
 
 const Ecommerce = () => {
   const [name, setName] = useState("");
@@ -112,15 +113,16 @@ const Ecommerce = () => {
       dispatch({ type: UPDATE_TASKS_STAGE_RESET });
       navigate("/");
     } else {
-      dispatch(listTasks());
+      dispatch(listTasks(keyword));
       dispatch(getBlance());
     }
   }, [
     dispatch,
     navigate,
     successUpdate,
-    userInfo,
+
     keyword,
+    userInfo,
     successDelete,
     successBinUpdate,
     successCreate,
@@ -151,8 +153,6 @@ const Ecommerce = () => {
       console.log(id);
     }
   };
-
-  console.log(id);
 
   if (tasks) {
     for (let index = 0; index < tasks.length; index++) {
@@ -559,10 +559,12 @@ const Ecommerce = () => {
 
           {/* create ticket */}
           <Dialog
+            blockScroll="false"
+            aria-expanded={create ? true : false}
             header="Add New Ticket"
             visible={create}
             onHide={() => setCreate(false)}
-            style={{ width: "50vw" }}
+            style={{ width: "40vw" }}
             breakpoints={{ "960px": "75vw", "641px": "100vw" }}
           >
             <form onSubmit={submitHandler}>
@@ -580,24 +582,18 @@ const Ecommerce = () => {
                   <label className="text-gray-600 mb-2 block">
                     Full Name <span className="text-primary">*</span>
                   </label>
-                  <div className="flex space-x-4">
-                    <input
-                      type="text"
-                      value={name}
-                      className="input-box lg:w-5/6 md:w-2/3 sm:w-1/2"
-                      placeholder="full name"
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
 
-                    <Button
-                      className="lg:w-1/6 md:w-1/3 sm:w-1/2"
-                      label="Search"
-                      icon="pi pi-spin pi-spinner"
-                      style={{backgroundColor: currentColor}}
-                    />
-                    
-                  </div>
+                  <AutoComplete
+                    type="text"
+                    inputStyle={{ width: "36.5vw" }}
+                    field="name"
+                    value={keyword}
+                    className="input-box w-full"
+                    required
+                    suggestions={tasks}
+                    completeMethod={submitHandler}
+                    onChange={(e) => setKeyword(e.target.value)}
+                  />
                 </div>
 
                 <div>

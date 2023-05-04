@@ -3,7 +3,7 @@ import { AiOutlineMenu } from 'react-icons/ai';
 import { RiNotification3Line } from 'react-icons/ri';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import profile from '../data/profile.png';
-import { Cart,  Notification, UserProfile } from '.';
+import { Notification, UserProfile } from '.';
 import { useStateContext } from '../contexts/ContextProvider';
 import { useSelector } from 'react-redux';
 
@@ -76,7 +76,6 @@ const Navbar = () => {
           </div>
       
 
-        {isClicked.cart && (<Cart />)}
         {isClicked.notification && (<Notification />)}
         {isClicked.userProfile && (<UserProfile />)}
       </div>
