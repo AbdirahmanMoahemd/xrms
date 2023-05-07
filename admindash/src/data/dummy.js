@@ -6,7 +6,7 @@ import {
   FiShoppingBag,
   FiCreditCard,
 } from "react-icons/fi";
-import {FcCustomerSupport} from 'react-icons/fc'
+import {FcCustomerSupport, FcSalesPerformance} from 'react-icons/fc'
 import {
   BsCurrencyDollar,
 } from "react-icons/bs";
@@ -29,6 +29,11 @@ export const links = [
     name: "Store",
     text: "store",
     icon: <AiFillAppstore />,
+  },
+  {
+    name: "Sales",
+    text: "sales",
+    icon: <FcSalesPerformance />,
   },
   {
     name: "Tasks",
@@ -57,6 +62,11 @@ export const Adminlinks = [
     name: "Store",
     text: "store",
     icon: <AiFillAppstore />,
+  },
+  {
+    name: "Sales",
+    text: "sales",
+    icon: <FcSalesPerformance />,
   },
   {
     name: "Tasks",

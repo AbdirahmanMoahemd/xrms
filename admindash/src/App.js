@@ -25,6 +25,7 @@ import UpdateIncome from "./pages/income/update_income";
 import AddExpense from "./pages/expense/add_expense";
 import UpdateExpense from "./pages/expense/update_expense";
 import Customers from "./pages/customers/customers";
+import SalesScreen from "./pages/sales/sales";
 
 const App = () => {
   const {
@@ -42,34 +43,22 @@ const App = () => {
   const { userInfo } = userLogin;
 
   useEffect(() => {
-   
-
-   
-      const currentThemeColor = localStorage.getItem("colorMode");
-      const currentThemeMode = localStorage.getItem("themeMode");
-      if (currentThemeColor && currentThemeMode) {
-        setCurrentColor(currentThemeColor);
-        setCurrentMode(currentThemeMode);
-      
+    const currentThemeColor = localStorage.getItem("colorMode");
+    const currentThemeMode = localStorage.getItem("themeMode");
+    if (currentThemeColor && currentThemeMode) {
+      setCurrentColor(currentThemeColor);
+      setCurrentMode(currentThemeMode);
     }
-   
-  
   }, [userInfo, navigate, setCurrentColor, setCurrentMode]);
 
-  window.addEventListener("beforeunload", (ev) => 
-  {  
-      ev.preventDefault();
-      return ev.returnValue = 'Are you sure you want to close?';
+  window.addEventListener("beforeunload", (ev) => {
+    ev.preventDefault();
+    return (ev.returnValue = "Are you sure you want to close?");
   });
 
-  
-
   return (
-
-
-    
     <div className={currentMode === "Dark" ? "dark" : ""}>
-     {userInfo ?
+      {userInfo ? (
         <div className="flex relative dark:bg-main-dark-bg">
           <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
             <button
@@ -102,66 +91,65 @@ const App = () => {
             </div>
             <div>
               {themeSettings && <ThemeSettings />}
-             <Routes>
-                  {/* dashboard  */}
-                  <Route path="/" element={<Ecommerce />} />
-                  <Route path="/Dhashboard" element={<Ecommerce />} />
+              <Routes>
+                {/* dashboard  */}
+                <Route path="/" element={<Ecommerce />} />
+                <Route path="/Dhashboard" element={<Ecommerce />} />
 
-                  {/* pages  */}
-                  <Route path="/update-store-item/:id" element={<UpdateStoreItem />} />
-                  <Route path="/add-store-item" element={<AddStoreItem />} />
-                  <Route path="/store" element={<StoreItems />} />
-
-                  {/* apps  */}
-
-                  <Route path="/tasks" element={<Tasks />} />
-                  <Route path="/add-tasks" element={<AddTasks />} />
-                  <Route path="/update-tasks/:id" element={<UpdateTask />} />
-                  <Route path="/recycle-bin" element={<BinTasks />} />
+                {/* pages  */}
+                <Route
+                  path="/update-store-item/:id"
+                  element={<UpdateStoreItem />}
+                />
+                <Route path="/add-store-item" element={<AddStoreItem />} />
+                <Route path="/store" element={<StoreItems />} />
 
 
+                <Route path="/sales" element={<SalesScreen />} />
 
-                  <Route path="/customers" element={<Customers />} />
+                {/* apps  */}
 
+                <Route path="/tasks" element={<Tasks />} />
+                <Route path="/add-tasks" element={<AddTasks />} />
+                <Route path="/update-tasks/:id" element={<UpdateTask />} />
+                <Route path="/recycle-bin" element={<BinTasks />} />
 
-                  <Route path="/income" element={<IncomeScreen />} />
-                  <Route path="/add-income" element={<AddIncome />} />
-                  <Route path="/update-income/:id" element={<UpdateIncome />} />
+                <Route path="/customers" element={<Customers />} />
 
+                <Route path="/income" element={<IncomeScreen />} />
+                <Route path="/add-income" element={<AddIncome />} />
+                <Route path="/update-income/:id" element={<UpdateIncome />} />
 
-                  <Route path="/expense" element={<ExpenseScreen />} />
-                  <Route path="/add-expense" element={<AddExpense />} />
-                  <Route path="/update-expense/:id" element={<UpdateExpense />} />
+                <Route path="/expense" element={<ExpenseScreen />} />
+                <Route path="/add-expense" element={<AddExpense />} />
+                <Route path="/update-expense/:id" element={<UpdateExpense />} />
 
+                <Route path="/expenses" element={<ExpenseScreen />} />
+                <Route path="/recycle-bin" element={<BinTasks />} />
+                <Route path="/recycle-bin" element={<BinTasks />} />
 
+                <Route path="/users" element={<Users />} />
 
-                  <Route path="/expenses" element={<ExpenseScreen />} />
-                  <Route path="/recycle-bin" element={<BinTasks />} />
-                  <Route path="/recycle-bin" element={<BinTasks />} />
+                {/* Settings  */}
+                <Route path="/Settings" element={<Settings />} />
+                <Route path="/Logout" element={<Logout />} />
+                <Route path="/register" element={<Register />} />
 
-
-
-                  <Route path="/users" element={<Users />} />
-
-
-                  {/* Settings  */}
-                  <Route path="/Settings" element={<Settings />} />
-                  <Route path="/Logout" element={<Logout />} />
-                  <Route path="/register" element={<Register />} />
-             
-                  <Route path="/login" element={<Login />} />
-                </Routes>
-                
+                <Route path="/login" element={<Login />} />
+                <Route path="*" element={<Login />} />
+              </Routes>
             </div>
             <Footer />
           </div>
         </div>
-     : <Routes>
-     <Route path="/" element={<Login />} />
-     <Route path="/login" element={<Login />} />
-     <Route path="/register" element={<Register />} />
-     </Routes>
-     }
+      ) : (
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      )}
     </div>
   );
 };

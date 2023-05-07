@@ -20,6 +20,7 @@ import {createTaskReducer, taskDeleteReducer, tasksBinReducer, tasksDetailsReduc
 import { createStoreItemReducer, storeItemDeleteReducer, storeItemDetailsReducer, storeItemListReducer, storeItemUpdateReducer } from "./reducers/storeReducers";
 import { createIncomeItemReducer, incomeItemDeleteReducer, incomeItemDetailsReducer, incomeItemListReducer, incomeItemUpdateReducer } from "./reducers/incomeReducers";
 import { blanceReducerCount, createExpenseItemReducer, expenseItemDeleteReducer, expenseItemDetailsReducer, expenseItemListReducer, expenseItemUpdateReducer } from "./reducers/expenseReducers";
+import { createCustomerReducer, customerDeleteReducer, customerDetailsReducer, customerUpdateReducer, customersListReducer } from "./reducers/customerReducer";
 
 
 const reducer = combineReducers({
@@ -66,7 +67,14 @@ const reducer = combineReducers({
   expenseItemDetails:expenseItemDetailsReducer,
 
 
-  blanceCount:blanceReducerCount
+  blanceCount:blanceReducerCount,
+  
+
+  createCustomer:createCustomerReducer,
+  customersList:customersListReducer,
+  customerDetails:customerDetailsReducer,
+  customerUpdate:customerUpdateReducer,
+  customerDelete:customerDeleteReducer
 
 
 

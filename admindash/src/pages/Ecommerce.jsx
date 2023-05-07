@@ -101,6 +101,10 @@ const Ecommerce = () => {
   let Delivered = 0;
 
   useEffect(() => {
+    dispatch(getBlance());
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch({ type: TASK_CREATE_RESET });
     dispatch({ type: GET_TASKS_RESET });
 
@@ -114,7 +118,6 @@ const Ecommerce = () => {
       navigate("/");
     } else {
       dispatch(listTasks(keyword));
-      dispatch(getBlance());
     }
   }, [
     dispatch,
@@ -127,6 +130,8 @@ const Ecommerce = () => {
     successBinUpdate,
     successCreate,
   ]);
+
+  
 
   const editconfirm = (id) => {
     setId(id);
@@ -339,7 +344,7 @@ const Ecommerce = () => {
               <input
                 type="text"
                 className="input-box w-full"
-                placeholder="search by name"
+                placeholder="search by phone"
                 style={{ borderColor: currentColor }}
                 onChange={(e) => setKeyword(e.target.value)}
               />
@@ -601,7 +606,7 @@ const Ecommerce = () => {
                     Phone Number <span className="text-primary">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     value={phone}
                     className="input-box w-full"
                     placeholder="phone number"

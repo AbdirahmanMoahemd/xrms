@@ -112,6 +112,18 @@ const Tasks = () => {
 
   const { currentColor } = useStateContext();
 
+  useEffect(() => {
+    window.onbeforeunload = function() {
+
+        return navigate('/login');
+        
+    };
+
+    return () => {
+        window.onbeforeunload = null;
+    };
+}, [navigate]);
+
   const onClickFn = () => {
     setCreate(true)
   };
@@ -196,7 +208,7 @@ const Tasks = () => {
               <input
                 type="text"
                 className="input-box w-full"
-                placeholder="search by name"
+                placeholder="search by phone"
                 style={{ borderColor: currentColor }}
                 onChange={(e) => setKeyword(e.target.value)}
               />

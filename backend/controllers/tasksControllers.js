@@ -4,14 +4,13 @@ import Tasks from "../models/tasksModel.js";
 export const getTasks = expressAsync(async (req, res) => {
   try {
     const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: "i",
-        },
-      }
-    : {};
-    const tasks = await Tasks.find({ ...keyword , bin:false}).sort({createdAt: -1}).populate("user");
+      ? {
+          phone: req.query.keyword,
+        }
+      : {};
+    const tasks = await Tasks.find({ ...keyword, bin: false })
+      .sort({ createdAt: -1 })
+      .populate("user");
 
     res.json({ tasks });
   } catch (error) {
@@ -19,10 +18,9 @@ export const getTasks = expressAsync(async (req, res) => {
   }
 });
 
-
 export const getTasksInBin = expressAsync(async (req, res) => {
   try {
-    const tasks = await Tasks.find({bin:true});
+    const tasks = await Tasks.find({ bin: true });
 
     res.json({ tasks });
   } catch (error) {
@@ -34,10 +32,8 @@ export const getTaskById = expressAsync(async (req, res) => {
   try {
     const task = await Tasks.findById(req.params.id);
     if (task) {
-      res.json(task); 
+      res.json(task);
     }
-
-   
   } catch (error) {
     res.json({ error: error.message });
   }
@@ -45,7 +41,8 @@ export const getTaskById = expressAsync(async (req, res) => {
 
 export const createTask = expressAsync(async (req, res) => {
   try {
-    const { name, phone, item, problem, amount,date, userid, comment } = req.body;
+    const { name, phone, item, problem, amount, date, userid, comment } =
+      req.body;
 
     const tasks = new Tasks({
       user: userid,
@@ -55,7 +52,7 @@ export const createTask = expressAsync(async (req, res) => {
       problem,
       amount,
       date,
-      comment
+      comment,
     });
     const createdTasks = await tasks.save();
     res.status(201).json(createdTasks);
@@ -63,7 +60,6 @@ export const createTask = expressAsync(async (req, res) => {
     res.status(404).json({ error: error.message });
   }
 });
-
 
 export const updateTasksStage = expressAsync(async (req, res) => {
   const { stage } = req.body;
@@ -75,14 +71,13 @@ export const updateTasksStage = expressAsync(async (req, res) => {
 
     const updatedTasks = await task.save();
     res.json({
-      updatedTasks
+      updatedTasks,
     });
   } else {
     res.status(404);
     throw new Error("Tasks Not Found");
   }
 });
-
 
 export const updateTasks = expressAsync(async (req, res) => {
   const { name, phone, item, problem, amount, date, stage, comment } = req.body;
@@ -101,7 +96,7 @@ export const updateTasks = expressAsync(async (req, res) => {
 
     const updatedTasks = await task.save();
     res.json({
-      updatedTasks
+      updatedTasks,
     });
   } else {
     res.status(404);
@@ -110,7 +105,6 @@ export const updateTasks = expressAsync(async (req, res) => {
 });
 
 export const moveTaskstoBin = expressAsync(async (req, res) => {
-
   const task = await Tasks.findById(req.params.id);
 
   if (task) {
@@ -118,7 +112,7 @@ export const moveTaskstoBin = expressAsync(async (req, res) => {
 
     const updatedTasks = await task.save();
     res.json({
-      updatedTasks
+      updatedTasks,
     });
   } else {
     res.status(404);
@@ -126,9 +120,7 @@ export const moveTaskstoBin = expressAsync(async (req, res) => {
   }
 });
 
-
 export const restoreTasks = expressAsync(async (req, res) => {
-
   const task = await Tasks.findById(req.params.id);
 
   if (task) {
@@ -136,7 +128,7 @@ export const restoreTasks = expressAsync(async (req, res) => {
 
     const updatedTasks = await task.save();
     res.json({
-      updatedTasks
+      updatedTasks,
     });
   } else {
     res.status(404);
