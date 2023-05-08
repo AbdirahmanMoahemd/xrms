@@ -49,7 +49,7 @@ export const createTaskReducer = (state = {}, action) => {
   }
 };
 
-export const tasksListReducer = (state = { tasks: [{ user: [] }] }, action) => {
+export const tasksListReducer = (state = { tasks: [{ user: [], customer: [] }] }, action) => {
   switch (action.type) {
     case GET_TASKS_REQUEST:
       return { loading: true };
@@ -67,7 +67,7 @@ export const tasksListReducer = (state = { tasks: [{ user: [] }] }, action) => {
   }
 };
 
-export const tasksListInBinReducer = (state = { tasks: [] }, action) => {
+export const tasksListInBinReducer = (state = { tasks: [], customer: [] }, action) => {
   switch (action.type) {
     case GET_BIN_TASKS_REQUEST:
       return { loading: true };
@@ -143,7 +143,7 @@ export const tasksUpdateReducer = (state = { task: {} }, action) => {
   }
 };
 
-export const tasksDetailsReducer = (state = { task: {} }, action) => {
+export const tasksDetailsReducer = (state = { task: {}, customer: [] }, action) => {
   switch (action.type) {
     case TASK_DETAILS_REQUEST:
       return { loading: true, ...state };

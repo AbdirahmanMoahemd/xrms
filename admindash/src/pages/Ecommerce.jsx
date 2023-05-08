@@ -49,6 +49,7 @@ const Ecommerce = () => {
   const [text, setText] = useState("");
   const [stage, setStage] = useState(0);
   const [message, setMessage] = useState(false);
+  const [type, setType] = useState(false);
 
   const dispatch = useDispatch();
   const tasksList = useSelector((state) => state.tasksList);
@@ -92,7 +93,7 @@ const Ecommerce = () => {
 
   const onClickFn = () => {
     // navigate("/add-tasks");
-    setCreate(true);
+    setType(true);
   };
 
   let process = 0;
@@ -379,6 +380,7 @@ const Ecommerce = () => {
           <table className="table">
             <thead>
               <tr>
+                <td>ID</td>
                 <td>NAME</td>
                 <td>Phone</td>
                 <td>Item</td>
@@ -405,6 +407,7 @@ const Ecommerce = () => {
                 <tbody>
                   {tasks.map((tasks) => (
                     <tr id={tasks._id}>
+                      <td>XRC-{tasks.customer && tasks.customer.custID}</td>
                       <td>{tasks.name}</td>
                       <td>{tasks.phone}</td>
                       <td>{tasks.item}</td>
@@ -412,9 +415,8 @@ const Ecommerce = () => {
                       <td>{tasks.date ? tasks.date.substring(0, 10) : ""}</td>
                       <td>${tasks.amount}</td>
                       <td>
-                        <Button
-                          label=""
-                          icon="pi pi-comment"
+                        <i
+                          className="pi pi-comment text-blue-700 cursor-pointer"
                           onClick={() => {
                             setMessage(true);
                             setText(tasks.comment);
@@ -423,27 +425,27 @@ const Ecommerce = () => {
                       </td>
                       <td>
                         {tasks.stage === 0 ? (
-                          <p className="text-white bg-blue-600 text-center px-1">
+                          <p className="text-white bg-blue-600 text-center px-1 cursor-pointer">
                             On Process
                           </p>
                         ) : tasks.stage === 1 ? (
-                          <p className="text-whit bg-yellow-300 text-center px-1">
+                          <p className="text-whit bg-yellow-300 text-center px-1 cursor-pointer">
                             Finished
                           </p>
                         ) : tasks.stage === 2 ? (
-                          <p className="text-white bg-green-500 text-center px-1">
+                          <p className="text-white bg-green-500 text-center px-1 cursor-pointer">
                             Delivered
                           </p>
                         ) : (
-                          <p className="text-white bg-red-600 text-center  px-1">
+                          <p className="text-white bg-red-600 text-center  px-1 cursor-pointer">
                             Unfinished
                           </p>
                         )}
                       </td>
                       <td>
-                        <Button
-                          label=""
-                          icon="pi pi-file-edit"
+                        <icon
+                         
+                          className="pi pi-file-edit text-blue-700 cursor-pointer"
                           onClick={() => {
                             editconfirm(tasks._id);
                             setStage(tasks.stage);
@@ -452,17 +454,11 @@ const Ecommerce = () => {
                       </td>
                       <td>
                         {userInfo.role === 1 ? (
-                          <Button
-                            label=""
-                            icon="pi pi-delete-left"
-                            onClick={() => binTask(tasks._id)}
-                          />
+                          <icon className="pi pi-delete-left text-red-700 cursor-pointer" onClick={() => binTask(tasks._id)} ></icon>
+                         
                         ) : (
-                          <Button
-                            label=""
-                            icon="pi pi-delete-left"
-                            onClick={() => deleteTask(tasks._id)}
-                          />
+                          <icon className="pi pi-delete-left text-red-700 cursor-pointer" onClick={()=> deleteTask(tasks._id)}></icon>
+                         
                         )}
                       </td>
                     </tr>
@@ -560,6 +556,23 @@ const Ecommerce = () => {
             breakpoints={{ "960px": "75vw", "641px": "100vw" }}
           >
             <p className="m-0">{text}</p>
+          </Dialog>
+
+          <Dialog
+            header="Type"
+            visible={type}
+            onHide={() => setType(false)}
+            style={{ width: "25vw" }}
+            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+          >
+            <div className="flex justify-around">
+            <Button label="New Customer" className="px-10" onClick={()=> {
+              setCreate(true)
+              setType(false)
+            }}/>
+            <span className="w-5"></span>
+            <Button label="Existing Customer"/>
+            </div>
           </Dialog>
 
           {/* create ticket */}

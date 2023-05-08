@@ -18,12 +18,13 @@ body{
 
 .table thead td {
     font-weight: 700;
+
     
 }
 
 .table td {
     padding: .5rem 1rem;
-    font-size: .9rem;
+    font-size: .85rem;
     color: #222;
 }
 

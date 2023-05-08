@@ -10,7 +10,8 @@ export const getTasks = expressAsync(async (req, res) => {
       : {};
     const tasks = await Tasks.find({ ...keyword, bin: false })
       .sort({ createdAt: -1 })
-      .populate("user");
+      .populate("user")
+      .populate("customer");
 
     res.json({ tasks });
   } catch (error) {
@@ -20,7 +21,7 @@ export const getTasks = expressAsync(async (req, res) => {
 
 export const getTasksInBin = expressAsync(async (req, res) => {
   try {
-    const tasks = await Tasks.find({ bin: true });
+    const tasks = await Tasks.find({ bin: true }).populate("customer");
 
     res.json({ tasks });
   } catch (error) {
@@ -30,7 +31,7 @@ export const getTasksInBin = expressAsync(async (req, res) => {
 
 export const getTaskById = expressAsync(async (req, res) => {
   try {
-    const task = await Tasks.findById(req.params.id);
+    const task = await Tasks.findById(req.params.id).populate("customer");
     if (task) {
       res.json(task);
     }

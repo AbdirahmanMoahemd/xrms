@@ -275,6 +275,7 @@ const Tasks = () => {
         <table className="table">
           <thead>
             <tr>
+              <td>ID</td>
               <td>NAME</td>
               <td>Phone</td>
               <td>Item</td>
@@ -283,7 +284,6 @@ const Tasks = () => {
               <td>Amount</td>
               <td></td>
               <td>Status</td>
-              {userInfo.role === 2 ? <td>CreatedBy</td> : ""}
               <td></td>
               <td></td>
             </tr>
@@ -302,6 +302,7 @@ const Tasks = () => {
             <tbody>
               {tasks.map((tasks) => (
                 <tr id={tasks._id}>
+                  <td>XRC-{tasks.customer && tasks.customer.custID}</td>
                   <td>{tasks.name}</td>
                   <td>{tasks.phone}</td>
                   <td>{tasks.item}</td>
@@ -309,9 +310,8 @@ const Tasks = () => {
                   <td>{tasks.date.substring(0, 10)}</td>
                   <td>${tasks.amount}</td>
                   <td>
-                    <Button
-                      label=""
-                      icon="pi pi-comment"
+                    <icon
+                      className="pi pi-comment text-blue-700 cursor-pointer"
                       onClick={() => {
                         setMessage(true);
                         setText(tasks.comment);
@@ -320,42 +320,37 @@ const Tasks = () => {
                   </td>
                   <td>
                     {tasks.stage === 0 ? (
-                      <p className="text-white bg-blue-600 text-center px-1">
+                      <p className="text-white bg-blue-600 text-center px-1 cursor-pointer">
                         On Process
                       </p>
                     ) : tasks.stage === 1 ? (
-                      <p className="text-whit bg-yellow-300 text-center px-1">
+                      <p className="text-whit bg-yellow-300 text-center px-1 cursor-pointer">
                         Finished
                       </p>
                     ) : tasks.stage === 2 ? (
-                      <p className="text-white bg-green-500 text-center px-1">
+                      <p className="text-white bg-green-500 text-center px-1 cursor-pointer">
                         Delivered
                       </p>
                     ) : (
-                      <p className="text-white bg-red-600 text-center  px-1">
+                      <p className="text-white bg-red-600 text-center  px-1 cursor-pointer">
                         Unfinished
                       </p>
                     )}
                   </td>
-                  {userInfo.role === 2 ? (
-                    <td>{tasks.user ? tasks.user.name.split(" ")[0] : ""}</td>
-                  ) : (
-                    ""
-                  )}
                   <td>
-                    <Button
-                      label=""
-                      icon="pi pi-file-edit"
-                      onClick={() => {
-                        editconfirm(tasks._id);
-                        setStage(tasks.stage);
-                      }}
-                    />
+                  <icon
+                         
+                         className="pi pi-file-edit text-blue-700 cursor-pointer"
+                         onClick={() => {
+                           editconfirm(tasks._id);
+                           setStage(tasks.stage);
+                         }}
+                       />
                   </td>
                   <td>
-                    <Button
-                      label=""
-                      icon="pi pi-delete-left"
+                    <icon
+                      
+                      className="pi pi-delete-left text-red-700 cursor-pointer"
                       onClick={() => binTask(tasks._id)}
                     />
                   </td>
