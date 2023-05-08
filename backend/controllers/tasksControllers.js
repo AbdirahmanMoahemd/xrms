@@ -1,5 +1,6 @@
 import expressAsync from "express-async-handler";
 import Tasks from "../models/tasksModel.js";
+import Customers from "../models/customersModel.js";
 
 export const getTasks = expressAsync(async (req, res) => {
   try {
@@ -42,23 +43,51 @@ export const getTaskById = expressAsync(async (req, res) => {
 
 export const createTask = expressAsync(async (req, res) => {
   try {
-    const { name, phone, item, problem, amount, date, userid, comment } =
-      req.body;
-
-    const tasks = new Tasks({
-      user: userid,
+    const {
       name,
       phone,
       item,
       problem,
       amount,
       date,
+      userid,
       comment,
-    });
-    const createdTasks = await tasks.save();
-    res.status(201).json(createdTasks);
+    } = req.body;
+
+    const excustomers = await Customers.findOne({ phone });
+    if (!excustomers) {
+      const customers = await Customers.find().sort({ createdAt: -1 });
+
+      const newCustomer = new Customers({
+        custID: customers[0].custID + 1,
+        name,
+        phone,
+      
+      });
+      const createdCustomers = await newCustomer.save();
+      if (createdCustomers) {
+        const tasks = new Tasks({
+          user: userid,
+          name,
+          phone,
+          item,
+          problem,
+          amount,
+          date,
+          comment,
+          customer:createdCustomers._id,
+        });
+  
+        const createdTasks = await tasks.save();
+        res.status(201).json(createdTasks);
+      }
+     
+    } else {
+      res.status(500).json({ message: "Already exists" });
+    }
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(404);
+    throw new Error(error)
   }
 });
 

@@ -8,6 +8,7 @@ import { AiOutlineFileDone } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  createNewTask,
   deleteTasks,
   listTasks,
   updateTasksStage,
@@ -31,6 +32,8 @@ import { FaMoneyBill } from "react-icons/fa";
 import { getBlance } from "../actions/expenseActions";
 import DatePicker from "react-date-picker";
 import { AutoComplete } from "primereact/autocomplete";
+import { createNewCustomer } from "../actions/cusomerActions";
+import { CUSTOMER_CREATE_RESET } from "../constants/customersConstants";
 
 const Ecommerce = () => {
   const [name, setName] = useState("");
@@ -91,6 +94,13 @@ const Ecommerce = () => {
 
   const { currentColor } = useStateContext();
 
+  const createCustomer = useSelector((state) => state.createCustomer);
+  const {
+    loading: loadingCustomerCreate,
+    error: errorCustomerCreate,
+    success: successCustomerCreate,
+  } = createCustomer;
+
   const onClickFn = () => {
     // navigate("/add-tasks");
     setType(true);
@@ -106,7 +116,30 @@ const Ecommerce = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch({ type: CUSTOMER_CREATE_RESET });
+    if (successCustomerCreate) {
+      setCreate(false);
+      setName("");
+      setPhone("");
+    }
+  }, [dispatch, successCustomerCreate]);
+
+  useEffect(() => {
     dispatch({ type: TASK_CREATE_RESET });
+
+    if (successCreate) {
+      
+      setCreate(false);
+      setAmount("");
+      setItem("");
+      setProblem("");
+      setComment("");
+
+      setDate(new Date());
+    }
+  }, [dispatch, successCreate]);
+
+  useEffect(() => {
     dispatch({ type: GET_TASKS_RESET });
 
     dispatch({ type: BIN_TASKS_RESET });
@@ -131,8 +164,6 @@ const Ecommerce = () => {
     successBinUpdate,
     successCreate,
   ]);
-
-  
 
   const editconfirm = (id) => {
     setId(id);
@@ -206,9 +237,19 @@ const Ecommerce = () => {
     });
   };
 
+  let userid = userInfo._id;
+
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(listTasks(keyword));
+  };
+
+  const saveHandler = (e) => {
+    e.preventDefault();
+    dispatch(createNewCustomer(name, phone));
+    dispatch(
+      createNewTask(name, phone, item, problem, date, amount, userid, comment)
+    );
   };
 
   return (
@@ -407,7 +448,7 @@ const Ecommerce = () => {
                 <tbody>
                   {tasks.map((tasks) => (
                     <tr id={tasks._id}>
-                      <td>XRC-{tasks.customer && tasks.customer.custID}</td>
+                      <td>XRC-{tasks.customer ? tasks.customer.custID : 0}</td>
                       <td>{tasks.name}</td>
                       <td>{tasks.phone}</td>
                       <td>{tasks.item}</td>
@@ -444,7 +485,6 @@ const Ecommerce = () => {
                       </td>
                       <td>
                         <icon
-                         
                           className="pi pi-file-edit text-blue-700 cursor-pointer"
                           onClick={() => {
                             editconfirm(tasks._id);
@@ -454,11 +494,15 @@ const Ecommerce = () => {
                       </td>
                       <td>
                         {userInfo.role === 1 ? (
-                          <icon className="pi pi-delete-left text-red-700 cursor-pointer" onClick={() => binTask(tasks._id)} ></icon>
-                         
+                          <icon
+                            className="pi pi-delete-left text-red-700 cursor-pointer"
+                            onClick={() => binTask(tasks._id)}
+                          ></icon>
                         ) : (
-                          <icon className="pi pi-delete-left text-red-700 cursor-pointer" onClick={()=> deleteTask(tasks._id)}></icon>
-                         
+                          <icon
+                            className="pi pi-delete-left text-red-700 cursor-pointer"
+                            onClick={() => deleteTask(tasks._id)}
+                          ></icon>
                         )}
                       </td>
                     </tr>
@@ -566,12 +610,16 @@ const Ecommerce = () => {
             breakpoints={{ "960px": "75vw", "641px": "100vw" }}
           >
             <div className="flex justify-around">
-            <Button label="New Customer" className="px-10" onClick={()=> {
-              setCreate(true)
-              setType(false)
-            }}/>
-            <span className="w-5"></span>
-            <Button label="Existing Customer"/>
+              <Button
+                label="New Customer"
+                className="px-10"
+                onClick={() => {
+                  setCreate(true);
+                  setType(false);
+                }}
+              />
+              <span className="w-5"></span>
+              <Button label="Existing Customer" />
             </div>
           </Dialog>
 
@@ -585,7 +633,7 @@ const Ecommerce = () => {
             style={{ width: "40vw" }}
             breakpoints={{ "960px": "75vw", "641px": "100vw" }}
           >
-            <form onSubmit={submitHandler}>
+            <form onSubmit={saveHandler}>
               {loadingCreate && (
                 <ProgressSpinner
                   style={{ width: "20px", height: "20px" }}
@@ -600,17 +648,13 @@ const Ecommerce = () => {
                   <label className="text-gray-600 mb-2 block">
                     Full Name <span className="text-primary">*</span>
                   </label>
-
-                  <AutoComplete
+                  <input
                     type="text"
-                    inputStyle={{ width: "36.5vw" }}
-                    field="name"
-                    value={keyword}
+                    value={name}
                     className="input-box w-full"
+                    placeholder="full name"
+                    onChange={(e) => setName(e.target.value)}
                     required
-                    suggestions={tasks}
-                    completeMethod={submitHandler}
-                    onChange={(e) => setKeyword(e.target.value)}
                   />
                 </div>
 
@@ -666,7 +710,7 @@ const Ecommerce = () => {
                     Amount <span className="text-primary">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="Number"
                     className="input-box w-full"
                     placeholder="amount"
                     value={amount}
