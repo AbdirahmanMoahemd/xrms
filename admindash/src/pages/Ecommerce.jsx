@@ -8,6 +8,7 @@ import { AiOutlineFileDone } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  createExisTask,
   createNewTask,
   deleteTasks,
   listTasks,
@@ -32,8 +33,10 @@ import { FaMoneyBill } from "react-icons/fa";
 import { getBlance } from "../actions/expenseActions";
 import DatePicker from "react-date-picker";
 import { AutoComplete } from "primereact/autocomplete";
-import { createNewCustomer } from "../actions/cusomerActions";
+import { createNewCustomer, listCustomers } from "../actions/cusomerActions";
 import { CUSTOMER_CREATE_RESET } from "../constants/customersConstants";
+
+import { ScrollPanel } from "primereact/scrollpanel";
 
 const Ecommerce = () => {
   const [name, setName] = useState("");
@@ -45,8 +48,12 @@ const Ecommerce = () => {
   const [amount, setAmount] = useState();
 
   const navigate = useNavigate();
+  const [hide, setHide] = useState(false);
+  const [custid, setCustid]= useState('')
   const [keyword, setKeyword] = useState("");
+  const [keyword2, setKeyword2] = useState("");
   const [create, setCreate] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [visible, setVisible] = useState(false);
   const [id, setId] = useState(0);
   const [text, setText] = useState("");
@@ -101,6 +108,13 @@ const Ecommerce = () => {
     success: successCustomerCreate,
   } = createCustomer;
 
+  const customersList = useSelector((state) => state.customersList);
+  const {
+    loading: loadingCustomers,
+    error: errorCustomers,
+    customers,
+  } = customersList;
+
   const onClickFn = () => {
     // navigate("/add-tasks");
     setType(true);
@@ -116,11 +130,14 @@ const Ecommerce = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(listCustomers(keyword2));
+  }, [dispatch, keyword2]);
+
+  useEffect(() => {
     dispatch({ type: CUSTOMER_CREATE_RESET });
     if (successCustomerCreate) {
       setCreate(false);
-      setName("");
-      setPhone("");
+      
     }
   }, [dispatch, successCustomerCreate]);
 
@@ -128,8 +145,10 @@ const Ecommerce = () => {
     dispatch({ type: TASK_CREATE_RESET });
 
     if (successCreate) {
-      
       setCreate(false);
+      setEdit(false);
+      setName("");
+      setPhone("");
       setAmount("");
       setItem("");
       setProblem("");
@@ -242,6 +261,11 @@ const Ecommerce = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(listTasks(keyword));
+  };
+
+  const saveExistingCus = (e) => {
+    e.preventDefault();
+    dispatch(createExisTask(name, phone, item, problem, date, amount, userid, comment, custid));
   };
 
   const saveHandler = (e) => {
@@ -619,7 +643,13 @@ const Ecommerce = () => {
                 }}
               />
               <span className="w-5"></span>
-              <Button label="Existing Customer" />
+              <Button
+                label="Existing Customer"
+                onClick={() => {
+                  setEdit(true);
+                  setType(false);
+                }}
+              />
             </div>
           </Dialog>
 
@@ -744,6 +774,172 @@ const Ecommerce = () => {
             </form>
           </Dialog>
         </div>
+
+        {/* create ticket */}
+        <Dialog
+          blockScroll="false"
+          aria-expanded={edit ? true : false}
+          header="Add New Ticket"
+          visible={edit}
+          onHide={() => {
+            setEdit(false);
+            setKeyword2("");
+            setName("");
+            setPhone("");
+            setItem("");
+            setProblem("");
+            setComment("");
+
+            setDate(new Date());
+          }}
+          style={{ width: "40vw" }}
+          breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        >
+          <form onSubmit={saveExistingCus}>
+            {loadingCreate && (
+              <ProgressSpinner
+                style={{ width: "20px", height: "20px" }}
+                strokeWidth="6"
+                fill="var(--surface-ground)"
+                animationDuration=".5s"
+              />
+            )}
+            {errorCreate && <Message severity="error" text={errorCreate} />}
+            <div className="space-y-4 ">
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Full Name <span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={keyword2}
+                  className="input-box w-full"
+                  placeholder="full name"
+                  onChange={(e) => {
+                    setKeyword2(e.target.value)
+                    setName(keyword2)
+                    setHide(!hide)
+                  }}
+                  required
+                />
+              </div>
+              <ScrollPanel style={{ width: "100%", height: hide ? "100px" : '0px'}}>
+                <>
+                  {loadingCustomers ? (
+                    <ProgressSpinner
+                      style={{ width: "20px", height:  "20px" }}
+                      strokeWidth="6"
+                      fill="var(--surface-ground)"
+                      animationDuration=".5s"
+                    />
+                  ) : error ? (
+                    <Message severity="error" text={error} />
+                  ) : (
+                    <>
+                      {customers.map((cust) => (
+                        <div
+                          className=" cursor-pointer pb-3"
+                          onClick={() => {
+                            setKeyword2(cust.name);
+                            setPhone(cust.phone);
+                            setCustid(cust._id)
+                            setHide(!hide)
+                          }}
+                        >
+                          <p>{cust.name}</p>
+                          <p>{cust.phone}</p>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </>
+              </ScrollPanel>
+
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Phone Number <span className="text-primary">*</span>
+                </label>
+                <input
+                  type="number"
+                  value={phone}
+                  className="input-box w-full"
+                  placeholder="phone number"
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Item name <span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={item}
+                  className="input-box w-full"
+                  placeholder="item name"
+                  onChange={(e) => setItem(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Problem Type <span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="input-box w-full"
+                  placeholder="problem type"
+                  value={problem}
+                  onChange={(e) => setProblem(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Date <span className="text-primary">*</span>
+                </label>
+                <DatePicker onChange={setDate} value={date} />
+              </div>
+
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Amount <span className="text-primary">*</span>
+                </label>
+                <input
+                  type="Number"
+                  className="input-box w-full"
+                  placeholder="amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-gray-600 mb-2 block">Comment.</label>
+                <textarea
+                  type="text"
+                  className="input-box w-full"
+                  placeholder="comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  cols="40"
+                  rows="5"
+                />
+              </div>
+
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="submit"
+                  className="py-2 px-10 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </Dialog>
       </div>
     </div>
   );

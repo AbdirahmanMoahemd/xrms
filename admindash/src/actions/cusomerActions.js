@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  CUSTOMER_CREATE_FAIL, CUSTOMER_CREATE_REQUEST, CUSTOMER_CREATE_SUCCESS, CUSTOMER_DELETE_FAIL, CUSTOMER_DELETE_REQUEST, CUSTOMER_DELETE_SUCCESS, CUSTOMER_DETAILS_FAIL, CUSTOMER_DETAILS_REQUEST, CUSTOMER_DETAILS_SUCCESS, CUSTOMER_LIST_FAIL, CUSTOMER_LIST_REQUEST, CUSTOMER_LIST_SUCCESS, CUSTOMER_UPDATE_FAIL, CUSTOMER_UPDATE_REQUEST, CUSTOMER_UPDATE_SUCCESS } from "../constants/customersConstants";
+import {  CUSTOMER_CREATE_FAIL, CUSTOMER_CREATE_REQUEST, CUSTOMER_CREATE_SUCCESS, CUSTOMER_DELETE_FAIL, CUSTOMER_DELETE_REQUEST, CUSTOMER_DELETE_SUCCESS, CUSTOMER_DETAILS_FAIL, CUSTOMER_DETAILS_REQUEST, CUSTOMER_DETAILS_SUCCESS, CUSTOMER_LIST_FAIL, CUSTOMER_LIST_REQUEST, CUSTOMER_LIST_SUCCESS, CUSTOMER_UPDATE_FAIL, CUSTOMER_UPDATE_REQUEST, CUSTOMER_UPDATE_SUCCESS, MY_TASKS_LIST_FAIL, MY_TASKS_LIST_REQUEST, MY_TASKS_LIST_SUCCESS } from "../constants/customersConstants";
 
 export const createNewCustomer =
   (name, phone) =>
@@ -81,7 +81,7 @@ export const createNewCustomer =
   
 
 
-  export const listCustomers = () => async (dispatch, getState) => {
+  export const listCustomers = (keyword2 = "") => async (dispatch, getState) => {
     try {
       dispatch({ type: CUSTOMER_LIST_REQUEST });
   
@@ -95,7 +95,7 @@ export const createNewCustomer =
         },
       };
   
-      const { data } = await axios.get(`/api/customers`, config);
+      const { data } = await axios.get(`/api/customers?keyword2=${keyword2}`, config);
   
       dispatch({
         type: CUSTOMER_LIST_SUCCESS,
@@ -104,6 +104,37 @@ export const createNewCustomer =
     } catch (error) {
       dispatch({
         type: CUSTOMER_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+  export const listMyTasks = (id) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: MY_TASKS_LIST_REQUEST });
+  
+      const {
+        userLogin: { userInfo },
+      } = getState();
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+  
+      const { data } = await axios.get(`/api/customers/mytasks/${id}`, config);
+  
+      dispatch({
+        type: MY_TASKS_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: MY_TASKS_LIST_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

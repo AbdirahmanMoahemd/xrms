@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Header } from "../../components";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { Dialog } from "primereact/dialog";
-import { createNewCustomer, listCustomers } from "../../actions/cusomerActions";
+import {
+  createNewCustomer,
+  listCustomers,
+  listMyTasks,
+} from "../../actions/cusomerActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Message } from "primereact/message";
@@ -15,8 +19,10 @@ import { Button } from "primereact/button";
 
 const Customers = () => {
   const [create, setCreate] = useState(false);
+  const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [keyword2, setKeyword2] = useState("");
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -45,8 +51,8 @@ const Customers = () => {
       setName("");
       setPhone("");
     }
-    dispatch(listCustomers())
-  }, [dispatch,userInfo,navigate, successCreate]);
+    dispatch(listCustomers(keyword2));
+  }, [dispatch, userInfo, keyword2, navigate, successCreate]);
 
   const onClickFn = () => {
     setCreate(true);
@@ -57,16 +63,49 @@ const Customers = () => {
     e.preventDefault();
     dispatch(createNewCustomer(name, phone));
   };
+
+  const getMyTasks = (id) => {
+    setShow(true);
+    dispatch(listMyTasks(id));
+  };
+
+  const getCustomers = (e) => {
+    e.preventDefault();
+    dispatch(listCustomers(keyword2));
+  };
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header
         category="Page"
-        title={`Customers (${loading ? '0':customers.length+1})`}
+        title={'Customers'}
         btnText="Add New"
         currentColor={currentColor}
         onClick={onClickFn}
       />
       <div className="table-responsive " style={{ overflowX: "auto" }}>
+        <center>
+          {" "}
+          <form
+            className="w-full xl:max-w-xl max-w-lg flex relative"
+            onSubmit={getCustomers}
+          >
+            <input
+              type="text"
+              className="input-box w-full"
+              placeholder="search by name"
+              style={{ borderColor: currentColor }}
+              onChange={(e) => setKeyword2(e.target.value)}
+            />
+            <button
+              type="submit"
+              style={{ backgroundColor: currentColor }}
+              className="border text-white px-8 font-medium rounded-r-md hover:bg-transparent  transition"
+            >
+              Search
+            </button>
+          </form>
+        </center>
+        <span className="px-1"></span>
         <table className="table">
           <thead>
             <tr>
@@ -95,35 +134,50 @@ const Customers = () => {
                   <td>XRC-{cust.custID}</td>
                   <td>{cust.name}</td>
                   <td>{cust.phone}</td>
-                  <td> <Button
-                          label="Show"
-                          icon=""
-                          onClick={() => {
-                            
-                          }}
-                        /></td>
-                    <td><Button
-                          label=""
-                          icon="pi pi-file-edit"
-                          onClick={() => {
-                          }}
-                        /></td>
+                  <td>
+                    {" "}
+                    <Button
+                      label="Show"
+                      icon=""
+                      onClick={() => getMyTasks(cust._id)}
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      label=""
+                      icon="pi pi-file-edit"
+                      onClick={() => {}}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
           )}
         </table>
       </div>
+
+      <Dialog
+        blockScroll="false"
+        aria-expanded={show ? true : false}
+        header="Tasks"
+        visible={show}
+        onHide={() => {
+          setShow(false);
+        }}
+        style={{ width: "40vw" }}
+        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+      ></Dialog>
+
       {/* create ticket */}
       <Dialog
         blockScroll="false"
         aria-expanded={create ? true : false}
         header="Add New Customer"
         visible={create}
-        onHide={() =>{ 
-          setCreate(false)
-          setName('')
-          setPhone('')
+        onHide={() => {
+          setCreate(false);
+          setName("");
+          setPhone("");
         }}
         style={{ width: "40vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}

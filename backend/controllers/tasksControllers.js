@@ -20,6 +20,9 @@ export const getTasks = expressAsync(async (req, res) => {
   }
 });
 
+
+
+
 export const getTasksInBin = expressAsync(async (req, res) => {
   try {
     const tasks = await Tasks.find({ bin: true }).populate("customer");
@@ -85,6 +88,44 @@ export const createTask = expressAsync(async (req, res) => {
     } else {
       res.status(500).json({ message: "Already exists" });
     }
+  } catch (error) {
+    res.status(404);
+    throw new Error(error)
+  }
+});
+
+export const createTaskExsting = expressAsync(async (req, res) => {
+  try {
+    const {
+      name,
+      phone,
+      item,
+      problem,
+      amount,
+      date,
+      userid,
+      comment,
+      customer
+    } = req.body;
+
+    
+        const tasks = new Tasks({
+          user: userid,
+          name,
+          phone,
+          item,
+          problem,
+          amount,
+          date,
+          comment,
+          customer,
+        });
+  
+        const createdTasks = await tasks.save();
+        res.status(201).json(createdTasks);
+      
+     
+    
   } catch (error) {
     res.status(404);
     throw new Error(error)

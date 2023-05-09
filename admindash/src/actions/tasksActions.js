@@ -28,8 +28,8 @@ import {
 } from "../constants/tasksConstants";
 import axios from "axios";
 
-export const createNewTask =
-  (name, phone, item, problem, date, amount, userid, comment) =>
+export const createExisTask =
+  (name, phone, item, problem, date, amount, userid, comment, customer) =>
   async (dispatch, getState) => {
     try {
       dispatch({
@@ -47,8 +47,8 @@ export const createNewTask =
       };
 
       const { data } = await axios.post(
-        "api/tasks",
-        { name, phone, item, problem, date, amount, userid, comment },
+        "api/tasks/existing",
+        { name, phone, item, problem, date, amount, userid, comment, customer },
         config
       );
 
@@ -66,6 +66,48 @@ export const createNewTask =
       });
     }
   };
+
+
+
+  
+export const createNewTask =
+(name, phone, item, problem, date, amount, userid, comment) =>
+async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: TASK_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(
+      "api/tasks",
+      { name, phone, item, problem, date, amount, userid, comment },
+      config
+    );
+
+    dispatch({
+      type: TASK_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: TASK_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 export const listTasks = (keyword = "") => async (dispatch, getState) => {
   try {
