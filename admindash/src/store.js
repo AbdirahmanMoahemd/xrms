@@ -21,6 +21,7 @@ import { createStoreItemReducer, storeItemDeleteReducer, storeItemDetailsReducer
 import { createIncomeItemReducer, incomeItemDeleteReducer, incomeItemDetailsReducer, incomeItemListReducer, incomeItemUpdateReducer } from "./reducers/incomeReducers";
 import { blanceReducerCount, createExpenseItemReducer, expenseItemDeleteReducer, expenseItemDetailsReducer, expenseItemListReducer, expenseItemUpdateReducer } from "./reducers/expenseReducers";
 import { createCustomerReducer, customerDeleteReducer, customerDetailsReducer, customerUpdateReducer, customersListReducer } from "./reducers/customerReducer";
+import { createSalesReducer, salesDeleteReducer, salesDetailsReducer, salesListReducer, salesUpdateReducer } from "./reducers/salesReducers";
 
 
 const reducer = combineReducers({
@@ -74,7 +75,14 @@ const reducer = combineReducers({
   customersList:customersListReducer,
   customerDetails:customerDetailsReducer,
   customerUpdate:customerUpdateReducer,
-  customerDelete:customerDeleteReducer
+  customerDelete:customerDeleteReducer,
+
+
+  createSales:createSalesReducer,
+  salesList:salesListReducer,
+  salesDetails:salesDetailsReducer,
+  salesUpdate:salesUpdateReducer,
+  salesDelete:salesDeleteReducer
 
 
 

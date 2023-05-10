@@ -76,7 +76,7 @@ const AddStoreItem = () => {
                 Cost Price <span className="text-primary">*</span>
               </label>
               <input
-                type="text"
+                type="number"
                 value={cost}
                 className="input-box w-full"
                 placeholder="phone number"

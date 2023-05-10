@@ -59,7 +59,7 @@ export const Adminlinks = [
     icon: <FiShoppingBag />,
   },
   {
-    name: "Store",
+    name: "Inventory",
     text: "store",
     icon: <AiFillAppstore />,
   },

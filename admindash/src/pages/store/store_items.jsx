@@ -27,6 +27,8 @@ const StoreItems = () => {
     success: successDelete,
   } = storeItemDelete;
 
+
+
   useEffect(() => {
     dispatch({ type: GET_STORES_RESET });
 
@@ -103,8 +105,8 @@ const StoreItems = () => {
                 {items.map((item) => (
                   <tr>
                     <td>{item.name}</td>
-                    <td>{item.cost}</td>
-                    <td>{item.selling}</td>
+                    <td>${item.cost}</td>
+                    <td>${item.selling}</td>
                     <td>{item.countInStock}</td>
                     <td>
                      <Link to={`/update-store-item/${item._id}`}><Button label="" icon="pi pi-file-edit" /></Link>

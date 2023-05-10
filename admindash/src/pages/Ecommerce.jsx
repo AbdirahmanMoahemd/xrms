@@ -32,7 +32,6 @@ import { FcMoneyTransfer } from "react-icons/fc";
 import { FaMoneyBill } from "react-icons/fa";
 import { getBlance } from "../actions/expenseActions";
 import DatePicker from "react-date-picker";
-import { AutoComplete } from "primereact/autocomplete";
 import { createNewCustomer, listCustomers } from "../actions/cusomerActions";
 import { CUSTOMER_CREATE_RESET } from "../constants/customersConstants";
 
@@ -137,6 +136,9 @@ const Ecommerce = () => {
     dispatch({ type: CUSTOMER_CREATE_RESET });
     if (successCustomerCreate) {
       setCreate(false);
+      setEdit(false);
+      setName("");
+      setPhone("");
       
     }
   }, [dispatch, successCustomerCreate]);
@@ -147,6 +149,7 @@ const Ecommerce = () => {
     if (successCreate) {
       setCreate(false);
       setEdit(false);
+      setKeyword2("");
       setName("");
       setPhone("");
       setAmount("");
@@ -265,11 +268,13 @@ const Ecommerce = () => {
 
   const saveExistingCus = (e) => {
     e.preventDefault();
+    setName(keyword2)
     dispatch(createExisTask(name, phone, item, problem, date, amount, userid, comment, custid));
   };
 
   const saveHandler = (e) => {
     e.preventDefault();
+    setName(name)
     dispatch(createNewCustomer(name, phone));
     dispatch(
       createNewTask(name, phone, item, problem, date, amount, userid, comment)
@@ -680,7 +685,6 @@ const Ecommerce = () => {
                   </label>
                   <input
                     type="text"
-                    value={name}
                     className="input-box w-full"
                     placeholder="full name"
                     onChange={(e) => setName(e.target.value)}
@@ -841,6 +845,7 @@ const Ecommerce = () => {
                           className=" cursor-pointer pb-3"
                           onClick={() => {
                             setKeyword2(cust.name);
+                            setName(cust.name);
                             setPhone(cust.phone);
                             setCustid(cust._id)
                             setHide(!hide)
