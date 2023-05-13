@@ -17,6 +17,9 @@ import {
   INCOME_UPDATE_REQUEST,
   INCOME_UPDATE_RESET,
   INCOME_UPDATE_SUCCESS,
+  TOTAL_TASKS_INCOME_FAIL,
+  TOTAL_TASKS_INCOME_REQUEST,
+  TOTAL_TASKS_INCOME_SUCCESS,
 } from "../constants/incomeConstants";
 
 export const createIncomeItemReducer = (state = {}, action) => {
@@ -92,5 +95,25 @@ export const incomeItemDeleteReducer = (state = {}, action) => {
       return state;
   }
 };
+
+
+export const totalTasksIncomeReducerCount = (state = { counter:{} }, action) => {
+  switch (action.type) {
+    case TOTAL_TASKS_INCOME_REQUEST:
+      return { loading: true, counter:{} };
+    case TOTAL_TASKS_INCOME_SUCCESS:
+      return {
+        loading: false,
+        counter: action.payload,
+        
+      };
+    case TOTAL_TASKS_INCOME_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+
 
 

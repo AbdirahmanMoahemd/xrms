@@ -1,6 +1,8 @@
 import Expenses from "../models/expenseModel.js";
 import expressAsync from "express-async-handler";
 import Income from "../models/incomeModel.js";
+import Sales from "../models/salesModel.js";
+import Tasks from "../models/tasksModel.js";
 
 export const getItems = expressAsync(async (req, res) => {
   try {
@@ -78,20 +80,33 @@ export const getTotalExpense = expressAsync(async (req, res) => {
   try {
     let toltalExp;
     let toltalInc;
-    const items = await Expenses.find()
-    const incomes = await Income.find()
+    let toltalIncTasks;
+    let toltalIncProducts;
+
+    const items = await Expenses.find();
+    const incomes = await Income.find();
+    const tasks = await Tasks.find({ stage: 2 });
+    const sales = await Sales.find({ isPaid: true });
 
     const addDecimals = (num) => {
-        return (Math.round(num * 100) / 100).toFixed(2);
-      };
+      return (Math.round(num * 100) / 100).toFixed(2);
+    };
 
     let expense = addDecimals(
       (toltalExp = items.reduce((acc, item) => acc + item.amount, 0))
     );
 
     let income = addDecimals(
-        (toltalInc = incomes.reduce((acc, item) => acc + item.amount, 0))
-      );
+      (toltalInc = incomes.reduce((acc, item) => acc + item.amount, 0))
+    );
+
+    let totalTasksInc = addDecimals(
+      (toltalIncTasks = tasks.reduce((acc, task) => acc + task.amount, 0))
+    );
+
+    let totalProductsInc = addDecimals(
+      (toltalIncProducts = sales.reduce((acc, item) => acc + item.price, 0))
+    );
 
     function kFormatter(num) {
       return Math.abs(num) > 999
@@ -99,12 +114,21 @@ export const getTotalExpense = expressAsync(async (req, res) => {
         : Math.sign(num) * Math.abs(num);
     }
 
-  let totalExpense= kFormatter(expense)
-  let totalIncome =  kFormatter(income)
-  let blance = income - expense;
+    let totalExpense = kFormatter(expense);
+    let totalTasksIncome = kFormatter(totalTasksInc);
+    let totalProductsIncome = kFormatter(totalProductsInc);
 
-    res.json({ totalExpense, totalIncome, blance });
+    let totalIncome = parseFloat(totalTasksInc) + parseFloat(totalProductsInc) + parseFloat(income);
+    let blance = totalIncome - expense;
+
+    res.json({
+      totalExpense,
+      totalIncome,
+      blance,
+      totalTasksIncome,
+      totalProductsIncome,
+    });
   } catch (error) {
-    res.json({ error: error.message }); 
+    res.json({ error: error.message });
   }
 });

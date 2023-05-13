@@ -15,6 +15,9 @@ import {
   INCOME_UPDATE_FAIL,
   INCOME_UPDATE_REQUEST,
   INCOME_UPDATE_SUCCESS,
+  TOTAL_TASKS_INCOME_FAIL,
+  TOTAL_TASKS_INCOME_REQUEST,
+  TOTAL_TASKS_INCOME_SUCCESS,
 } from "../constants/incomeConstants";
 
 
@@ -188,5 +191,40 @@ export const deleteIncomeItem = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+
+export const getTasksTotalIncome = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: TOTAL_TASKS_INCOME_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get("/api/income/tasks/total", config);
+
+    dispatch({
+      type: TOTAL_TASKS_INCOME_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: TOTAL_TASKS_INCOME_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+
+
 
 

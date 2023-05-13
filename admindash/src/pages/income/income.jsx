@@ -8,8 +8,15 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
 import { GET_STORES_RESET } from "../../constants/storeConstants";
 import { confirmAlert } from "react-confirm-alert";
-import { deleteIncomeItem, listIncomeItems } from "../../actions/incomeActions";
+import {
+  deleteIncomeItem,
+  getTasksTotalIncome,
+  listIncomeItems,
+} from "../../actions/incomeActions";
 import { Dialog } from "primereact/dialog";
+import { BsCurrencyDollar } from "react-icons/bs";
+import { MdPendingActions } from "react-icons/md";
+import { getBlance } from "../../actions/expenseActions";
 
 const IncomeScreen = () => {
   const navigate = useNavigate();
@@ -30,6 +37,12 @@ const IncomeScreen = () => {
     success: successDelete,
   } = storeItemDelete;
 
+  const blanceCount = useSelector((state) => state.blanceCount);
+  const { counter } = blanceCount;
+
+
+  
+
   useEffect(() => {
     dispatch({ type: GET_STORES_RESET });
 
@@ -39,6 +52,12 @@ const IncomeScreen = () => {
       dispatch(listIncomeItems());
     }
   }, [dispatch, navigate, userInfo, successDelete]);
+
+  useEffect(() => {
+    dispatch(getBlance());
+  }, [dispatch]);
+
+
 
   const onClickFn = () => {
     navigate("/add-income");
@@ -60,8 +79,46 @@ const IncomeScreen = () => {
       ],
     });
   };
+
   return (
+
+    <>
+    
+    <div className="flex flex-wrap lg:flex-nowrap justify-between m-10">
+        <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="font-bold text-gray-400">Total Tasks Income</p>
+              <p className="text-2xl">${counter.totalTasksIncome}</p>
+            </div>
+            <button
+              type="button"
+              style={{ backgroundColor: currentColor }}
+              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+            >
+              <MdPendingActions />
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-36 rounded-xl w-full  p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="font-bold text-gray-400">Total Products Income</p>
+              <p className="text-2xl">${counter.totalProductsIncome}</p>
+            </div>
+            <button
+              type="button"
+              style={{ backgroundColor: currentColor }}
+              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+            >
+              <BsCurrencyDollar />
+            </button>
+          </div>
+        </div>
+      </div>
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
+      
       <Dialog
         header="Reference"
         visible={message}
@@ -129,9 +186,13 @@ const IncomeScreen = () => {
                       />
                     </td>
                     <td>
-                     {item ?   <Link to={`/update-income/${item._id}`}>
-                        <Button label="" icon="pi pi-file-edit" />
-                      </Link> : ''}
+                      {item ? (
+                        <Link to={`/update-income/${item._id}`}>
+                          <Button label="" icon="pi pi-file-edit" />
+                        </Link>
+                      ) : (
+                        ""
+                      )}
                     </td>
                     <td>
                       <Button
@@ -149,6 +210,7 @@ const IncomeScreen = () => {
         </table>
       </div>
     </div>
+    </>
   );
 };
 

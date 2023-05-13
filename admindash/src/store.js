@@ -18,7 +18,7 @@ import {
 
 import {createTaskReducer, taskDeleteReducer, tasksBinReducer, tasksDetailsReducer, tasksListInBinReducer, tasksListReducer, tasksUnBinReducer, tasksUpdateReducer, tasksUpdateStageReducer} from './reducers/tasksReducers'
 import { createStoreItemReducer, storeItemDeleteReducer, storeItemDetailsReducer, storeItemListReducer, storeItemUpdateReducer } from "./reducers/storeReducers";
-import { createIncomeItemReducer, incomeItemDeleteReducer, incomeItemDetailsReducer, incomeItemListReducer, incomeItemUpdateReducer } from "./reducers/incomeReducers";
+import { createIncomeItemReducer, incomeItemDeleteReducer, incomeItemDetailsReducer, incomeItemListReducer, incomeItemUpdateReducer, totalTasksIncomeReducerCount } from "./reducers/incomeReducers";
 import { blanceReducerCount, createExpenseItemReducer, expenseItemDeleteReducer, expenseItemDetailsReducer, expenseItemListReducer, expenseItemUpdateReducer } from "./reducers/expenseReducers";
 import { createCustomerReducer, customerDeleteReducer, customerDetailsReducer, customerUpdateReducer, customersListReducer } from "./reducers/customerReducer";
 import { createSalesReducer, salesDeleteReducer, salesDetailsReducer, salesListReducer, salesUpdateReducer } from "./reducers/salesReducers";
@@ -60,6 +60,7 @@ const reducer = combineReducers({
   incomeItemDelete:incomeItemDeleteReducer,
   incomeItemUpdate:incomeItemUpdateReducer,
   incomeItemDetails:incomeItemDetailsReducer,
+  totalTasksIncomeCount:totalTasksIncomeReducerCount,
 
   createExpenseItem:createExpenseItemReducer,
   expenseItemList:expenseItemListReducer,
